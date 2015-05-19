@@ -25,7 +25,28 @@
         <dd>
             @Html.DisplayFor(model => model.ExpiryDate)
         </dd>
-
+        <dt>
+            @Html.DisplayNameFor(model => model.LogEntries)
+        </dt>
+        <dd>
+            <table class="table">
+                <tr>
+                    <th>Time</th>
+                    <th>Category</th>
+                </tr>
+                @foreach (var item in Model.LogEntries)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Time)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Category)
+                        </td>
+                    </tr>
+                }
+            </table>
+        </dd>
     </dl>
 </div>
 <p>
