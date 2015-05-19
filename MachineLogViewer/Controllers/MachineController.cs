@@ -63,7 +63,7 @@ namespace MachineLogViewer.Controllers
         }
 
         // GET: Machine/Details/5
-        public ActionResult Details(int? id, string sortOrder)
+        public ActionResult Details(int? id, string sortOrder, Category? category, DateTime? startDate, DateTime? endDate)
         {
             if (id == null)
             {
@@ -78,6 +78,19 @@ namespace MachineLogViewer.Controllers
             ViewBag.CategorySortParm = String.IsNullOrEmpty(sortOrder) ? "category_desc" : "";
             ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
 
+            List<SelectListItem> items = new List<SelectListItem>();
+            
+            items.Add(new SelectListItem { Text = "", Value = "", Selected = category == null });
+            
+            foreach (var value in Enum.GetValues(typeof(Category)))
+            {
+                items.Add(new SelectListItem { Text = value.ToString(), Value = ((int)value).ToString(), Selected = category.HasValue && (Category)value == category.Value });   
+            }
+
+            ViewBag.Category = items;
+            ViewBag.StartDate = startDate;
+            ViewBag.EndDate = endDate;
+
             MachineDetailsViewModel viewModel = new MachineDetailsViewModel
             {
                 MachineId = machine.MachineId,
@@ -85,19 +98,24 @@ namespace MachineLogViewer.Controllers
                 ExpiryDate = machine.ExpiryDate
             };
 
+            viewModel.LogEntries = machine.LogEntries
+                .Where(le => category == null || le.Category == category)
+                .Where(le => startDate == null || le.Time >= startDate)
+                .Where(le => endDate == null || le.Time <= endDate).ToList();
+
             switch (sortOrder)
             {
                 case "category_desc":
-                    viewModel.LogEntries = machine.LogEntries.OrderByDescending(s => s.Category).ToList();
+                    viewModel.LogEntries = viewModel.LogEntries.OrderByDescending(s => s.Category).ToList();
                     break;
                 case "Date":
-                    viewModel.LogEntries = machine.LogEntries.OrderBy(s => s.Time).ToList();
+                    viewModel.LogEntries = viewModel.LogEntries.OrderBy(s => s.Time).ToList();
                     break;
                 case "date_desc":
-                    viewModel.LogEntries = machine.LogEntries.OrderByDescending(s => s.Time).ToList();
+                    viewModel.LogEntries = viewModel.LogEntries.OrderByDescending(s => s.Time).ToList();
                     break;
                 default:
-                    viewModel.LogEntries = machine.LogEntries.OrderBy(s => s.Category).ToList();
+                    viewModel.LogEntries = viewModel.LogEntries.OrderBy(s => s.Category).ToList();
                     break;
             }
 

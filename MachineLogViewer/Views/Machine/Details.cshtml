@@ -1,4 +1,5 @@
-﻿@model MachineLogViewer.Models.MachineDetailsViewModel
+﻿@using MachineLogViewer.Models
+@model MachineLogViewer.Models.MachineDetailsViewModel
 
 @{
     ViewBag.Title = "Details";
@@ -29,6 +30,21 @@
             @Html.DisplayNameFor(model => model.LogEntries)
         </dt>
         <dd>
+            @using (Html.BeginForm("Details", "Machine", FormMethod.Get))
+            {
+                <p>
+                    Filter by Category: @Html.DropDownList("Category")
+                </p>
+                <p>
+                    Filter by Start Date: @Html.TextBox("StartDate")
+                </p>
+                <p>
+                    Filter by Start Date: @Html.TextBox("EndDate")
+                </p>
+                <p>
+                    <input type="submit" value="Search" />
+                </p>
+            }
             <table class="table">
                 <tr>
                     <th>
