@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using MachineLogViewer.DAL;
 using MachineLogViewer.Models;
+using PagedList;
 
 namespace MachineLogViewer.Controllers
 {
@@ -16,13 +17,53 @@ namespace MachineLogViewer.Controllers
         private MachineLogViewerContext db = new MachineLogViewerContext();
 
         // GET: Machine
-        public ActionResult Index()
+        public ActionResult Index(string sortOrder, string currentFilter, string searchString, int? page)
         {
-            return View(db.Machines.ToList());
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
+
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+
+            var machines = from m in db.Machines
+                           select m;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                machines = machines.Where(s => s.Description.Contains(searchString));
+            }
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    machines = machines.OrderByDescending(s => s.Description);
+                    break;
+                case "Date":
+                    machines = machines.OrderBy(s => s.ExpiryDate);
+                    break;
+                case "date_desc":
+                    machines = machines.OrderByDescending(s => s.ExpiryDate);
+                    break;
+                default:
+                    machines = machines.OrderBy(s => s.Description);
+                    break;
+            }
+            int pageSize = 3;
+            int pageNumber = (page ?? 1);
+            return View(machines.ToPagedList(pageNumber, pageSize));
         }
 
         // GET: Machine/Details/5
-        public ActionResult Details(int? id)
+        public ActionResult Details(int? id, string sortOrder)
         {
             if (id == null)
             {
@@ -33,7 +74,34 @@ namespace MachineLogViewer.Controllers
             {
                 return HttpNotFound();
             }
-            return View(machine);
+
+            ViewBag.CategorySortParm = String.IsNullOrEmpty(sortOrder) ? "category_desc" : "";
+            ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
+
+            MachineDetailsViewModel viewModel = new MachineDetailsViewModel
+            {
+                MachineId = machine.MachineId,
+                Description = machine.Description,
+                ExpiryDate = machine.ExpiryDate
+            };
+
+            switch (sortOrder)
+            {
+                case "category_desc":
+                    viewModel.LogEntries = machine.LogEntries.OrderByDescending(s => s.Category).ToList();
+                    break;
+                case "Date":
+                    viewModel.LogEntries = machine.LogEntries.OrderBy(s => s.Time).ToList();
+                    break;
+                case "date_desc":
+                    viewModel.LogEntries = machine.LogEntries.OrderByDescending(s => s.Time).ToList();
+                    break;
+                default:
+                    viewModel.LogEntries = machine.LogEntries.OrderBy(s => s.Category).ToList();
+                    break;
+            }
+
+            return View(viewModel);
         }
 
         // GET: Machine/Create

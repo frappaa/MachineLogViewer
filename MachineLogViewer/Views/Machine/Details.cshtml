@@ -1,4 +1,4 @@
-﻿@model MachineLogViewer.Models.Machine
+﻿@model MachineLogViewer.Models.MachineDetailsViewModel
 
 @{
     ViewBag.Title = "Details";
@@ -31,8 +31,13 @@
         <dd>
             <table class="table">
                 <tr>
-                    <th>Time</th>
-                    <th>Category</th>
+                    <th>
+                        @Html.ActionLink("Time", "Details", new { sortOrder = ViewBag.DateSortParm })
+                    </th>
+                    <th>
+                        @Html.ActionLink("Category", "Details", new { sortOrder = ViewBag.CategorySortParm })
+                    </th>
+                    <th></th>
                 </tr>
                 @foreach (var item in Model.LogEntries)
                 {
