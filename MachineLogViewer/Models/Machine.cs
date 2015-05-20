@@ -12,7 +12,7 @@ namespace MachineLogViewer.Models
         public string Description { get; set; }
 
         [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         [Display(Name = "Expiry Date")]
         public DateTime ExpiryDate { get; set; }
 
