@@ -63,8 +63,9 @@ namespace MachineLogViewer.Controllers
         }
 
         // GET: Machine/Details/5
-        public ActionResult Details(int? id, string sortOrder, Category? category, DateTime? startDate, DateTime? endDate)
+        public ActionResult Details(int? id, string sortOrder, Category? category, DateTime? startDate, DateTime? endDate, int? page)
         {
+            ViewBag.CurrentSort = sortOrder;
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -98,7 +99,7 @@ namespace MachineLogViewer.Controllers
                 ExpiryDate = machine.ExpiryDate
             };
 
-            viewModel.LogEntries = machine.LogEntries
+            var logEntries = machine.LogEntries
                 .Where(le => category == null || le.Category == category)
                 .Where(le => startDate == null || le.Time >= startDate)
                 .Where(le => endDate == null || le.Time <= endDate).ToList();
@@ -106,19 +107,22 @@ namespace MachineLogViewer.Controllers
             switch (sortOrder)
             {
                 case "category_desc":
-                    viewModel.LogEntries = viewModel.LogEntries.OrderByDescending(s => s.Category).ToList();
+                    logEntries = logEntries.OrderByDescending(s => s.Category).ToList();
                     break;
                 case "Date":
-                    viewModel.LogEntries = viewModel.LogEntries.OrderBy(s => s.Time).ToList();
+                    logEntries = logEntries.OrderBy(s => s.Time).ToList();
                     break;
                 case "date_desc":
-                    viewModel.LogEntries = viewModel.LogEntries.OrderByDescending(s => s.Time).ToList();
+                    logEntries = logEntries.OrderByDescending(s => s.Time).ToList();
                     break;
                 default:
-                    viewModel.LogEntries = viewModel.LogEntries.OrderBy(s => s.Category).ToList();
+                    logEntries = logEntries.OrderBy(s => s.Category).ToList();
                     break;
             }
 
+            int pageSize = 2;
+            int pageNumber = (page ?? 1);
+            viewModel.LogEntries = logEntries.ToPagedList(pageNumber, pageSize);
             return View(viewModel);
         }
 

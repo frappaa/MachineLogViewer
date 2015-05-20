@@ -1,11 +1,15 @@
 ﻿@using MachineLogViewer.Models
 @model MachineLogViewer.Models.MachineDetailsViewModel
 
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = "Log";
 }
 
-<h2>Details</h2>
+<h2>Log</h2>
 
 <div>
     <h4>Machine</h4>
@@ -48,10 +52,10 @@
             <table class="table">
                 <tr>
                     <th>
-                        @Html.ActionLink("Time", "Details", new { sortOrder = ViewBag.DateSortParm })
+                        @Html.ActionLink("Time", "Details", new {sortOrder = ViewBag.DateSortParm, category = ViewBag.Category, startDate = ViewBag.StartDate, endDate = ViewBag.EndDate })
                     </th>
                     <th>
-                        @Html.ActionLink("Category", "Details", new { sortOrder = ViewBag.CategorySortParm })
+                        @Html.ActionLink("Category", "Details", new { sortOrder = ViewBag.CategorySortParm, category = ViewBag.Category, startDate = ViewBag.StartDate, endDate = ViewBag.EndDate })
                     </th>
                     <th></th>
                 </tr>
@@ -67,6 +71,11 @@
                     </tr>
                 }
             </table>
+            <br />
+            Page @(Model.LogEntries.PageCount < Model.LogEntries.PageNumber ? 0 : Model.LogEntries.PageNumber) of @Model.LogEntries.PageCount
+
+            @Html.PagedListPager(Model.LogEntries, page => Url.Action("Details",
+    new { page, sortOrder = ViewBag.CurrentSort, category = ViewBag.Category, startDate = ViewBag.StartDate, endDate = ViewBag.EndDate }))
         </dd>
     </dl>
 </div>
