@@ -7,11 +7,12 @@
 }
 
 <h2>Machines</h2>
-
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-
+@if (User.IsInRole("admin"))
+{
+    <p>
+        @Html.ActionLink("Create New", "Create")
+    </p>
+}
 @using (Html.BeginForm("Index", "Machine", FormMethod.Get))
 {
     <div class="form-horizontal">
@@ -50,9 +51,19 @@
             @Html.DisplayFor(modelItem => item.ExpiryDate)
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.MachineId }) |
-            @Html.ActionLink("Logs", "Details", new { id=item.MachineId }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.MachineId })
+            @if (User.IsInRole("admin"))
+            {
+                @Html.ActionLink("Edit", "Edit", new { id = item.MachineId })
+                @: |
+            }
+
+            @Html.ActionLink("Logs", "Details", new { id = item.MachineId })
+            
+            @if (User.IsInRole("admin"))
+            {
+                @: |
+                @Html.ActionLink("Delete", "Delete", new { id = item.MachineId })
+            }
         </td>
     </tr>
 }

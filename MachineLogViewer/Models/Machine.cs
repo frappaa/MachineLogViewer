@@ -18,5 +18,7 @@ namespace MachineLogViewer.Models
 
         public virtual ICollection<LogEntry> LogEntries { get; set; }
 
+        public virtual MachineUser User { get; set; }
+
     }
 }

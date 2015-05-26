@@ -4,10 +4,13 @@ using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using MachineLogViewer.DAL;
 using MachineLogViewer.Models;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using PagedList;
 
 namespace MachineLogViewer.Controllers
@@ -15,10 +18,18 @@ namespace MachineLogViewer.Controllers
     [Authorize]
     public class MachineController : Controller
     {
-        private MachineLogViewerContext db = new MachineLogViewerContext();
+        private readonly MachineLogViewerContext _db;
+
+        private readonly UserManager<MachineUser> _userManager;
+
+        public MachineController()
+        {
+            _db = new MachineLogViewerContext();
+            _userManager = new UserManager<MachineUser>(new UserStore<MachineUser>(_db));
+        }
 
         // GET: Machine
-        public ActionResult Index(string sortOrder, string currentFilter, string searchString, int? page)
+        public async Task<ActionResult> Index(string sortOrder, string currentFilter, string searchString, int? page)
         {
             ViewBag.CurrentSort = sortOrder;
             ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
@@ -35,7 +46,12 @@ namespace MachineLogViewer.Controllers
 
             ViewBag.CurrentFilter = searchString;
 
-            var machines = from m in db.Machines
+            var currentUser = await _userManager.FindByIdAsync
+                                                 (User.Identity.GetUserId());
+
+            var isAdmin = User.IsInRole("admin");
+
+            var machines = from m in _db.Machines
                            select m;
 
             if (!String.IsNullOrEmpty(searchString))
@@ -60,21 +76,34 @@ namespace MachineLogViewer.Controllers
             }
             int pageSize = 3;
             int pageNumber = (page ?? 1);
-            return View(machines.ToPagedList(pageNumber, pageSize));
+            var filteredMachines = machines.ToList();
+            filteredMachines.Where(m => isAdmin || m.User.Id == currentUser.Id);
+            return View(filteredMachines.ToPagedList(pageNumber, pageSize));
         }
 
         // GET: Machine/Details/5
-        public ActionResult Details(int? id, string sortOrder, Category? category, DateTime? startDate, DateTime? endDate, int? page)
+        public async Task<ActionResult> Details(int? id, string sortOrder, Category? category, DateTime? startDate, DateTime? endDate, int? page)
         {
             ViewBag.CurrentSort = sortOrder;
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Machine machine = db.Machines.Find(id);
+            Machine machine = _db.Machines.Find(id);
+
             if (machine == null)
             {
                 return HttpNotFound();
+            }
+
+            var currentUser = await _userManager.FindByIdAsync
+                                                 (User.Identity.GetUserId());
+
+            var isAdmin = User.IsInRole("admin");
+
+            if (!isAdmin && machine.User.Id != currentUser.Id)
+            {
+                return new HttpUnauthorizedResult();
             }
 
             ViewBag.CategorySortParm = String.IsNullOrEmpty(sortOrder) ? "category_desc" : "category";
@@ -128,6 +157,7 @@ namespace MachineLogViewer.Controllers
         }
 
         // GET: Machine/Create
+        [Authorize(Roles = "admin")]
         public ActionResult Create()
         {
             return View();
@@ -138,14 +168,15 @@ namespace MachineLogViewer.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public ActionResult Create([Bind(Include = "MachineId,Description,ExpiryDate")] Machine machine)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    db.Machines.Add(machine);
-                    db.SaveChanges();
+                    _db.Machines.Add(machine);
+                    _db.SaveChanges();
                     return RedirectToAction("Index");
                 }
             }
@@ -158,13 +189,14 @@ namespace MachineLogViewer.Controllers
         }
 
         // GET: Machine/Edit/5
+        [Authorize(Roles = "admin")]
         public ActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Machine machine = db.Machines.Find(id);
+            Machine machine = _db.Machines.Find(id);
             if (machine == null)
             {
                 return HttpNotFound();
@@ -177,19 +209,20 @@ namespace MachineLogViewer.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public ActionResult EditPost(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var machineToUpdate = db.Machines.Find(id);
+            var machineToUpdate = _db.Machines.Find(id);
             if (TryUpdateModel(machineToUpdate, "",
                new string[] { "Description", "ExpiryDate" }))
             {
                 try
                 {
-                    db.SaveChanges();
+                    _db.SaveChanges();
 
                     return RedirectToAction("Index");
                 }
@@ -203,6 +236,7 @@ namespace MachineLogViewer.Controllers
         }
 
         // GET: Machine/Delete/5
+        [Authorize(Roles = "admin")]
         public ActionResult Delete(int? id, bool? saveChangesError = false)
         {
             if (id == null)
@@ -213,7 +247,7 @@ namespace MachineLogViewer.Controllers
             {
                 ViewBag.ErrorMessage = "Delete failed. Try again, and if the problem persists see your system administrator.";
             }
-            Machine machine = db.Machines.Find(id);
+            Machine machine = _db.Machines.Find(id);
             if (machine == null)
             {
                 return HttpNotFound();
@@ -224,13 +258,14 @@ namespace MachineLogViewer.Controllers
         // POST: Machine/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public ActionResult Delete(int id)
         {
             try
             {
-                Machine machine = db.Machines.Find(id);
-                db.Machines.Remove(machine);
-                db.SaveChanges();
+                Machine machine = _db.Machines.Find(id);
+                _db.Machines.Remove(machine);
+                _db.SaveChanges();
             }
             catch (DataException/* dex */)
             {
@@ -244,7 +279,7 @@ namespace MachineLogViewer.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                _db.Dispose();
             }
             base.Dispose(disposing);
         }

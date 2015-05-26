@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using MachineLogViewer.Models;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace MachineLogViewer.DAL
 {
@@ -8,15 +10,38 @@ namespace MachineLogViewer.DAL
     {
         protected override void Seed(MachineLogViewerContext context)
         {
+            var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(context));
+
+            roleManager.Create(new IdentityRole("admin"));
+
+            var userManager = new UserManager<MachineUser>(new UserStore<MachineUser>(context));
+
+            var adminUser = new MachineUser
+            {
+                UserName = "admin@gmail.com"
+            };
+            userManager.Create(adminUser, "P_assw0rdAdmin");
+            userManager.AddToRole(adminUser.Id, "admin");
+
+            var user1 = new MachineUser { UserName = "user1@gmail.com", IsActive = true };
+            userManager.Create(user1, "P_assw0rd1");
+
+            var user2 = new MachineUser { UserName = "user2@gmail.com", IsActive = false };
+            userManager.Create(user2, "P_assw0rd2");
+            
+            var user3 = new MachineUser { UserName = "user3@gmail.com", IsActive = true };
+            userManager.Create(user3, "P_assw0rd3");
+
+
             var machines = new List<Machine>
             {
-                new Machine {Description = "Machine 1", ExpiryDate = new DateTime(2015, 9, 30)},
-                new Machine {Description = "Machine 2", ExpiryDate = new DateTime(2015, 4, 30)},
-                new Machine {Description = "Machine 3", ExpiryDate = new DateTime(2015, 11, 30)},
-                new Machine {Description = "Machine 4", ExpiryDate = new DateTime(2015, 12, 31)},
-                new Machine {Description = "Machine 5", ExpiryDate = new DateTime(2016, 1, 31)},
-                new Machine {Description = "Machine 6", ExpiryDate = new DateTime(2015, 1, 31)},
-                new Machine {Description = "Machine 7", ExpiryDate = new DateTime(2016, 7, 31)},
+                new Machine {Description = "Machine 1", ExpiryDate = new DateTime(2015, 9, 30), User = user1 },
+                new Machine {Description = "Machine 2", ExpiryDate = new DateTime(2015, 4, 30), User = user1 },
+                new Machine {Description = "Machine 3", ExpiryDate = new DateTime(2015, 11, 30), User = user1 },
+                new Machine {Description = "Machine 4", ExpiryDate = new DateTime(2015, 12, 31), User = user2 },
+                new Machine {Description = "Machine 5", ExpiryDate = new DateTime(2016, 1, 31), User = user3 },
+                new Machine {Description = "Machine 6", ExpiryDate = new DateTime(2015, 1, 31), User = user3 },
+                new Machine {Description = "Machine 7", ExpiryDate = new DateTime(2016, 7, 31), User = user3 },
 
             };
 
@@ -46,9 +71,11 @@ namespace MachineLogViewer.DAL
             logEntries.ForEach(le => context.LogEntries.Add(le));
             context.SaveChanges();
 
-
-
             base.Seed(context);
         }
+
+        private void AddUsersAndRoles(MachineLogViewerContext context)
+        {
+                 }
     }
 }
