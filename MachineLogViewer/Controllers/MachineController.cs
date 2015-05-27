@@ -74,7 +74,7 @@ namespace MachineLogViewer.Controllers
             int pageSize = 3;
             int pageNumber = (page ?? 1);
             var filteredMachines = machines.ToList();
-            filteredMachines = filteredMachines.Where(m => isAdmin || m.User.Id == currentUser.Id).ToList();
+            filteredMachines = filteredMachines.Where(m => isAdmin || (m.User.Id == currentUser.Id && m.ExpiryDate >= DateTime.Today)).ToList();
             return View(filteredMachines.ToPagedList(pageNumber, pageSize));
         }
 
@@ -98,7 +98,7 @@ namespace MachineLogViewer.Controllers
 
             var isAdmin = User.IsInRole("admin");
 
-            if (!isAdmin && machine.User.Id != currentUser.Id)
+            if (!isAdmin && (machine.User.Id != currentUser.Id || machine.ExpiryDate < DateTime.Today))
             {
                 return new HttpUnauthorizedResult();
             }
