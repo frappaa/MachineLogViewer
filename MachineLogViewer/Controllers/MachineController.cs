@@ -18,14 +18,14 @@ namespace MachineLogViewer.Controllers
     [Authorize]
     public class MachineController : Controller
     {
-        private readonly MachineLogViewerContext _db;
+        private readonly ApplicationDbContext _db;
 
-        private readonly UserManager<MachineUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
 
         public MachineController()
         {
-            _db = new MachineLogViewerContext();
-            _userManager = new UserManager<MachineUser>(new UserStore<MachineUser>(_db));
+            _db = new ApplicationDbContext();
+            _userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(_db));
         }
 
         // GET: Machine
