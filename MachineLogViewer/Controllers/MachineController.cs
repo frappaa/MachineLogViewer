@@ -77,7 +77,7 @@ namespace MachineLogViewer.Controllers
             int pageSize = 3;
             int pageNumber = (page ?? 1);
             var filteredMachines = machines.ToList();
-            filteredMachines.Where(m => isAdmin || m.User.Id == currentUser.Id);
+            filteredMachines = filteredMachines.Where(m => isAdmin || m.User.Id == currentUser.Id).ToList();
             return View(filteredMachines.ToPagedList(pageNumber, pageSize));
         }
 
