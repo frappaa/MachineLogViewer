@@ -76,7 +76,18 @@ namespace MachineLogViewer.Controllers
 
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, change to shouldLockout: true
-            var result = await SignInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, shouldLockout: false);
+            var result = await SignInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, shouldLockout: true);
+            if (result == SignInStatus.Success)
+            {
+                var db = new ApplicationDbContext();
+                var user = db.Users.First(u => u.UserName == model.UserName);
+
+                if (!user.IsActive)
+                {
+                    result = SignInStatus.LockedOut;
+                }
+            }
+
             switch (result)
             {
                 case SignInStatus.Success:
@@ -132,8 +143,8 @@ namespace MachineLogViewer.Controllers
         [Authorize(Roles = "admin")]
         public ActionResult Index()
         {
-            var Db = new ApplicationDbContext();
-            var users = Db.Users;
+            var db = new ApplicationDbContext();
+            var users = db.Users;
             var model = new List<EditUserViewModel>();
             foreach (var user in users)
             {
@@ -147,8 +158,8 @@ namespace MachineLogViewer.Controllers
         [Authorize(Roles = "admin")]
         public ActionResult Edit(string id, ManageController.ManageMessageId? Message = null)
         {
-            var Db = new ApplicationDbContext();
-            var user = Db.Users.First(u => u.Id == id);
+            var db = new ApplicationDbContext();
+            var user = db.Users.First(u => u.Id == id);
             var model = new EditUserViewModel(user);
             ViewBag.MessageId = Message;
             return View(model);
@@ -160,12 +171,12 @@ namespace MachineLogViewer.Controllers
         {
             if (ModelState.IsValid)
             {
-                var Db = new ApplicationDbContext();
-                var user = Db.Users.First(u => u.Id == model.Id);
+                var db = new ApplicationDbContext();
+                var user = db.Users.First(u => u.Id == model.Id);
                 // Update the user data:
                 user.IsActive = model.IsActive;
-                Db.Entry(user).State = System.Data.Entity.EntityState.Modified;
-                await Db.SaveChangesAsync();
+                db.Entry(user).State = System.Data.Entity.EntityState.Modified;
+                await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
             // If we got this far, something failed, redisplay form
@@ -174,8 +185,8 @@ namespace MachineLogViewer.Controllers
         [Authorize(Roles = "admin")]
         public ActionResult Delete(string id = null)
         {
-            var Db = new ApplicationDbContext();
-            var user = Db.Users.First(u => u.Id == id);
+            var db = new ApplicationDbContext();
+            var user = db.Users.First(u => u.Id == id);
             var model = new EditUserViewModel(user);
             if (user == null)
             {

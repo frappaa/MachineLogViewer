@@ -31,6 +31,7 @@ namespace MachineLogViewer.Controllers
             ViewBag.CurrentSort = sortOrder;
             ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
+            ViewBag.UserSortParm = sortOrder == "User" ? "user_desc" : "User";
 
             if (searchString != null)
             {
@@ -66,6 +67,12 @@ namespace MachineLogViewer.Controllers
                     break;
                 case "date_desc":
                     machines = machines.OrderByDescending(s => s.ExpiryDate);
+                    break;
+                case "User":
+                    machines = machines.OrderBy(s => s.User.UserName);
+                    break;
+                case "user_desc":
+                    machines = machines.OrderByDescending(s => s.User.UserName);
                     break;
                 default:
                     machines = machines.OrderBy(s => s.Description);

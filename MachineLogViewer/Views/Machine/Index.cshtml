@@ -37,8 +37,14 @@
             @Html.ActionLink("Description", "Index", new { sortOrder = ViewBag.NameSortParm, currentFilter = ViewBag.CurrentFilter })
         </th>
         <th>
-            @Html.ActionLink("Expiry Date", "Index", new { sortOrder = ViewBag.DateSortParm, currentFilter = ViewBag.CurrentFilter })
+            @Html.ActionLink("Expiry Date", "Index", new {sortOrder = ViewBag.DateSortParm, currentFilter = ViewBag.CurrentFilter})
         </th>
+        @if (User.IsInRole("admin"))
+        {
+            <th>
+                @Html.ActionLink("User", "Index", new {sortOrder = ViewBag.UserSortParm, currentFilter = ViewBag.CurrentFilter})
+            </th>
+        }
         <th></th>
     </tr>
 
@@ -50,6 +56,12 @@
         <td>
             @Html.DisplayFor(modelItem => item.ExpiryDate)
         </td>
+        @if (User.IsInRole("admin"))
+        {
+            <td>
+                @Html.DisplayFor(modelItem => item.User.UserName)
+            </td>
+        }
         <td>
             @if (User.IsInRole("admin"))
             {
