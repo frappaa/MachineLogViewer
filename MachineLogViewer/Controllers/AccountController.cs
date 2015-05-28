@@ -138,6 +138,7 @@ namespace MachineLogViewer.Controllers
             foreach (var user in users)
             {
                 var u = new EditUserViewModel(user);
+                u.IsAdmin = UserManager.GetRoles(user.Id).Contains("admin");
                 model.Add(u);
             }
             return View(model);
@@ -147,7 +148,7 @@ namespace MachineLogViewer.Controllers
         public ActionResult Edit(string id, ManageController.ManageMessageId? Message = null)
         {
             var Db = new ApplicationDbContext();
-            var user = Db.Users.First(u => u.UserName == id);
+            var user = Db.Users.First(u => u.Id == id);
             var model = new EditUserViewModel(user);
             ViewBag.MessageId = Message;
             return View(model);
@@ -160,7 +161,7 @@ namespace MachineLogViewer.Controllers
             if (ModelState.IsValid)
             {
                 var Db = new ApplicationDbContext();
-                var user = Db.Users.First(u => u.UserName == model.UserName);
+                var user = Db.Users.First(u => u.Id == model.Id);
                 // Update the user data:
                 user.IsActive = model.IsActive;
                 Db.Entry(user).State = System.Data.Entity.EntityState.Modified;
@@ -174,7 +175,7 @@ namespace MachineLogViewer.Controllers
         public ActionResult Delete(string id = null)
         {
             var Db = new ApplicationDbContext();
-            var user = Db.Users.First(u => u.UserName == id);
+            var user = Db.Users.First(u => u.Id == id);
             var model = new EditUserViewModel(user);
             if (user == null)
             {
@@ -190,7 +191,7 @@ namespace MachineLogViewer.Controllers
         public ActionResult DeleteConfirmed(string id)
         {
             var Db = new ApplicationDbContext();
-            var user = Db.Users.First(u => u.UserName == id);
+            var user = Db.Users.First(u => u.Id == id);
             Db.Users.Remove(user);
             Db.SaveChanges();
             return RedirectToAction("Index");

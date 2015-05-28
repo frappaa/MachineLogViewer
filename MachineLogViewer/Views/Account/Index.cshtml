@@ -17,6 +17,9 @@
         <th>
             @Html.DisplayNameFor(model => model.IsActive)
         </th>
+        <th>
+            @Html.DisplayNameFor(model => model.IsAdmin)
+        </th>
         <th></th>
     </tr>
 
@@ -29,8 +32,11 @@
             @Html.DisplayFor(modelItem => item.IsActive)
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-            @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            @Html.DisplayFor(modelItem => item.IsAdmin)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+            @Html.ActionLink("Delete", "Delete", new { id = item.Id })
         </td>
     </tr>
 }

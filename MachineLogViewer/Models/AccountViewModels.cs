@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace MachineLogViewer.Models
 {
@@ -56,9 +57,13 @@ namespace MachineLogViewer.Models
         // Allow Initialization with an instance of ApplicationUser:
         public EditUserViewModel(ApplicationUser user)
         {
-            this.UserName = user.UserName;
-            this.IsActive = user.IsActive;
+            Id = user.Id;
+            UserName = user.UserName;
+            IsActive = user.IsActive;
+            //IsAdmin = user.Roles.Any(r => r.RoleId == "admin");
         }
+
+        public string Id { get; set; }
 
         [Required]
         [Display(Name = "User Name")]
@@ -67,6 +72,10 @@ namespace MachineLogViewer.Models
         [Required]
         [Display(Name = "Active?")]
         public bool IsActive { get; set; }
+
+        [Required]
+        [Display(Name = "Admin?")]
+        public bool IsAdmin { get; set; }
     }
 
     public class ResetPasswordViewModel
