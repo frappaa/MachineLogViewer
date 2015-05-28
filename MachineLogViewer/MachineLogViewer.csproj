@@ -195,6 +195,7 @@
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
     <Compile Include="Models\ApplicationUser.cs" />
+    <Compile Include="Models\IdentityManager.cs" />
     <Compile Include="Models\LogEntry.cs" />
     <Compile Include="Models\Machine.cs" />
     <Compile Include="Models\MachineDetailsViewModel.cs" />
@@ -268,6 +269,9 @@
     <Content Include="Views\Machine\Details.cshtml" />
     <Content Include="Views\Machine\Edit.cshtml" />
     <Content Include="Views\Machine\Index.cshtml" />
+    <Content Include="Views\Account\Edit.cshtml" />
+    <Content Include="Views\Account\Index.cshtml" />
+    <Content Include="Views\Account\Delete.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

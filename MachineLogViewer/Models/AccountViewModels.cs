@@ -3,19 +3,12 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MachineLogViewer.Models
 {
-    public class ForgotViewModel
-    {
-        [Required]
-        [Display(Name = "Email")]
-        public string Email { get; set; }
-    }
-
     public class LoginViewModel
     {
         [Required]
-        [Display(Name = "Email")]
+        [Display(Name = "User name")]
         [EmailAddress]
-        public string Email { get; set; }
+        public string UserName { get; set; }
 
         [Required]
         [DataType(DataType.Password)]
@@ -30,8 +23,8 @@ namespace MachineLogViewer.Models
     {
         [Required]
         [EmailAddress]
-        [Display(Name = "Email")]
-        public string Email { get; set; }
+        [Display(Name = "User name")]
+        public string UserName { get; set; }
 
         [Required]
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
@@ -43,6 +36,36 @@ namespace MachineLogViewer.Models
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+
+        // Return a pre-poulated instance of AppliationUser:
+        public ApplicationUser GetUser()
+        {
+            var user = new ApplicationUser
+            {
+                UserName = UserName,
+                IsActive = true,
+            };
+            return user;
+        }
+    }
+
+    public class EditUserViewModel
+    {
+        public EditUserViewModel() { }
+
+        // Allow Initialization with an instance of ApplicationUser:
+        public EditUserViewModel(ApplicationUser user)
+        {
+            this.UserName = user.UserName;
+            this.Email = user.Email;
+        }
+
+        [Required]
+        [Display(Name = "User Name")]
+        public string UserName { get; set; }
+
+        [Required]
+        public string Email { get; set; }
     }
 
     public class ResetPasswordViewModel

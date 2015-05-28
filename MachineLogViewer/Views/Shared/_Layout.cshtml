@@ -24,6 +24,10 @@
                     @if (Request.IsAuthenticated)
                     {
                         <li>@Html.ActionLink("Machines", "Index", "Machine")</li>
+                        if (User.IsInRole("admin"))
+                        {
+                             <li>@Html.ActionLink("Admin", "Index", "Account")</li>
+                        }
                     }
                 </ul>
                 @Html.Partial("_LoginPartial")

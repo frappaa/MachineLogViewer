@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
@@ -75,7 +76,7 @@ namespace MachineLogViewer.Controllers
 
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, change to shouldLockout: true
-            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
+            var result = await SignInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, shouldLockout: false);
             switch (result)
             {
                 case SignInStatus.Success:
@@ -92,7 +93,7 @@ namespace MachineLogViewer.Controllers
  
         //
         // GET: /Account/Register
-        [AllowAnonymous]
+        [Authorize(Roles = "admin")]
         public ActionResult Register()
         {
             return View();
@@ -101,13 +102,13 @@ namespace MachineLogViewer.Controllers
         //
         // POST: /Account/Register
         [HttpPost]
-        [AllowAnonymous]
+        [Authorize(Roles = "admin")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = model.GetUser();
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -119,13 +120,80 @@ namespace MachineLogViewer.Controllers
                     // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                     // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
 
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "Account");
                 }
                 AddErrors(result);
             }
 
             // If we got this far, something failed, redisplay form
             return View(model);
+        }
+
+        [Authorize(Roles = "admin")]
+        public ActionResult Index()
+        {
+            var Db = new ApplicationDbContext();
+            var users = Db.Users;
+            var model = new List<EditUserViewModel>();
+            foreach (var user in users)
+            {
+                var u = new EditUserViewModel(user);
+                model.Add(u);
+            }
+            return View(model);
+        }
+
+        [Authorize(Roles = "admin")]
+        public ActionResult Edit(string id, ManageController.ManageMessageId? Message = null)
+        {
+            var Db = new ApplicationDbContext();
+            var user = Db.Users.First(u => u.UserName == id);
+            var model = new EditUserViewModel(user);
+            ViewBag.MessageId = Message;
+            return View(model);
+        }
+        [HttpPost]
+        [Authorize(Roles = "admin")]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Edit(EditUserViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var Db = new ApplicationDbContext();
+                var user = Db.Users.First(u => u.UserName == model.UserName);
+                // Update the user data:
+                user.Email = model.Email;
+                Db.Entry(user).State = System.Data.Entity.EntityState.Modified;
+                await Db.SaveChangesAsync();
+                return RedirectToAction("Index");
+            }
+            // If we got this far, something failed, redisplay form
+            return View(model);
+        }
+        [Authorize(Roles = "admin")]
+        public ActionResult Delete(string id = null)
+        {
+            var Db = new ApplicationDbContext();
+            var user = Db.Users.First(u => u.UserName == id);
+            var model = new EditUserViewModel(user);
+            if (user == null)
+            {
+                return HttpNotFound();
+            }
+            return View(model);
+        }
+
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
+        public ActionResult DeleteConfirmed(string id)
+        {
+            var Db = new ApplicationDbContext();
+            var user = Db.Users.First(u => u.UserName == id);
+            Db.Users.Remove(user);
+            Db.SaveChanges();
+            return RedirectToAction("Index");
         }
 
         //
