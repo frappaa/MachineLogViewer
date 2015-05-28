@@ -57,7 +57,7 @@ namespace MachineLogViewer.Models
         public EditUserViewModel(ApplicationUser user)
         {
             this.UserName = user.UserName;
-            this.Email = user.Email;
+            this.IsActive = user.IsActive;
         }
 
         [Required]
@@ -65,7 +65,8 @@ namespace MachineLogViewer.Models
         public string UserName { get; set; }
 
         [Required]
-        public string Email { get; set; }
+        [Display(Name = "Active?")]
+        public bool IsActive { get; set; }
     }
 
     public class ResetPasswordViewModel
@@ -87,13 +88,5 @@ namespace MachineLogViewer.Models
         public string ConfirmPassword { get; set; }
 
         public string Code { get; set; }
-    }
-
-    public class ForgotPasswordViewModel
-    {
-        [Required]
-        [EmailAddress]
-        [Display(Name = "Email")]
-        public string Email { get; set; }
     }
 }

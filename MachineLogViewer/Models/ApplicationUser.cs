@@ -12,6 +12,7 @@ namespace MachineLogViewer.Models
     public class ApplicationUser : IdentityUser
     {
         [Required]
+        [Display(Name = "Active?")]
         public bool IsActive { get; set; }
 
         public virtual Collection<Machine> Machines { get; set; }
