@@ -78,6 +78,45 @@ namespace MachineLogViewer.Controllers
             return View(filteredMachines.ToPagedList(pageNumber, pageSize));
         }
 
+        // GET: Machine
+        [Authorize(Roles = "admin")]
+        public async Task<ActionResult> IndexByUser(string sortOrder, int? page, string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+
+            ViewBag.Title = string.Format("Machines for user {0}", user.UserName);
+            ViewBag.UserId = user.Id;
+            ViewBag.UserName = user.UserName;
+
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
+
+            var machines = from m in _db.Machines
+                           select m;
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    machines = machines.OrderByDescending(s => s.Description);
+                    break;
+                case "Date":
+                    machines = machines.OrderBy(s => s.ExpiryDate);
+                    break;
+                case "date_desc":
+                    machines = machines.OrderByDescending(s => s.ExpiryDate);
+                    break;
+                default:
+                    machines = machines.OrderBy(s => s.Description);
+                    break;
+            }
+            int pageSize = 3;
+            int pageNumber = (page ?? 1);
+            var filteredMachines = machines.ToList();
+            filteredMachines = filteredMachines.Where(m => (m.User.Id == userId)).ToList();
+            return View(filteredMachines.ToPagedList(pageNumber, pageSize));
+        }
+
         // GET: Machine/Details/5
         public async Task<ActionResult> Details(int? id, string sortOrder, Category? category, DateTime? startDate, DateTime? endDate, int? page)
         {

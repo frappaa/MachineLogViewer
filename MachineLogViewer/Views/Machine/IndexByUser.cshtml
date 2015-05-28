@@ -1,0 +1,39 @@
+﻿@model PagedList.IPagedList<MachineLogViewer.Models.Machine>
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+
+<h2>Machines for @ViewBag.UserName</h2>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.ActionLink("Description", "IndexByUser", new { userId = ViewBag.UserId, sortOrder = ViewBag.NameSortParm })
+        </th>
+        <th>
+            @Html.ActionLink("Expiry Date", "IndexByUser", new { userId = ViewBag.UserId, sortOrder = ViewBag.DateSortParm })
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ExpiryDate)
+            </td>
+            
+        </tr>
+    }
+
+</table>
+<br />
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+
+@Html.PagedListPager(Model, page => Url.Action("IndexByUser",
+    new { page, sortOrder = ViewBag.CurrentSort, userId = ViewBag.UserId }))
+
+<a href="@Url.Action("Index", "Account")">Back to Admin</a>
