@@ -37,7 +37,8 @@ namespace MachineLogViewer.Migrations
 
             var adminUser = new ApplicationUser
             {
-                UserName = "admin"
+                UserName = "admin",
+                IsActive = true
             };
             userManager.Create(adminUser, "P_assw0rdAdmin");
             userManager.AddToRole(adminUser.Id, "admin");

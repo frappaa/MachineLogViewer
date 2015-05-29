@@ -302,7 +302,16 @@ namespace MachineLogViewer.Controllers
 
                 machineToUpdate.Description = viewModel.Description;
                 machineToUpdate.ExpiryDate = viewModel.ExpiryDate;
-                machineToUpdate.User = await _userManager.FindByIdAsync(viewModel.UserId);
+                if (string.IsNullOrEmpty(viewModel.UserId))
+                {
+                    machineToUpdate.User = null;
+                    machineToUpdate.UserId = null;
+                }
+                else
+                {
+                    machineToUpdate.User = await _userManager.FindByIdAsync(viewModel.UserId);
+                    machineToUpdate.UserId = viewModel.UserId;
+                }
                 _db.Entry(machineToUpdate).State = System.Data.Entity.EntityState.Modified;
                 await _db.SaveChangesAsync();
 

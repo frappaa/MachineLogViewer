@@ -27,11 +27,11 @@ namespace MachineLogViewer.Migrations
                         MachineId = c.Int(nullable: false, identity: true),
                         Description = c.String(nullable: false),
                         ExpiryDate = c.DateTime(nullable: false),
-                        User_Id = c.String(maxLength: 128),
+                        UserId = c.String(maxLength: 128),
                     })
                 .PrimaryKey(t => t.MachineId)
-                .ForeignKey("dbo.AspNetUsers", t => t.User_Id)
-                .Index(t => t.User_Id);
+                .ForeignKey("dbo.AspNetUsers", t => t.UserId)
+                .Index(t => t.UserId);
             
             CreateTable(
                 "dbo.AspNetUsers",
@@ -108,7 +108,7 @@ namespace MachineLogViewer.Migrations
         {
             DropForeignKey("dbo.AspNetUserRoles", "RoleId", "dbo.AspNetRoles");
             DropForeignKey("dbo.AspNetUserRoles", "UserId", "dbo.AspNetUsers");
-            DropForeignKey("dbo.Machine", "User_Id", "dbo.AspNetUsers");
+            DropForeignKey("dbo.Machine", "UserId", "dbo.AspNetUsers");
             DropForeignKey("dbo.AspNetUserLogins", "UserId", "dbo.AspNetUsers");
             DropForeignKey("dbo.AspNetUserClaims", "UserId", "dbo.AspNetUsers");
             DropForeignKey("dbo.LogEntry", "MachineId", "dbo.Machine");
@@ -118,7 +118,7 @@ namespace MachineLogViewer.Migrations
             DropIndex("dbo.AspNetUserLogins", new[] { "UserId" });
             DropIndex("dbo.AspNetUserClaims", new[] { "UserId" });
             DropIndex("dbo.AspNetUsers", "UserNameIndex");
-            DropIndex("dbo.Machine", new[] { "User_Id" });
+            DropIndex("dbo.Machine", new[] { "UserId" });
             DropIndex("dbo.LogEntry", new[] { "MachineId" });
             DropTable("dbo.AspNetRoles");
             DropTable("dbo.AspNetUserRoles");
