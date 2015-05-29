@@ -37,18 +37,18 @@ namespace MachineLogViewer.Migrations
 
             var adminUser = new ApplicationUser
             {
-                UserName = "admin@gmail.com"
+                UserName = "admin"
             };
             userManager.Create(adminUser, "P_assw0rdAdmin");
             userManager.AddToRole(adminUser.Id, "admin");
 
-            var user1 = new ApplicationUser { UserName = "user1@gmail.com", IsActive = true };
+            var user1 = new ApplicationUser { UserName = "user1", IsActive = true };
             userManager.Create(user1, "P_assw0rd1");
 
-            var user2 = new ApplicationUser { UserName = "user2@gmail.com", IsActive = false };
+            var user2 = new ApplicationUser { UserName = "user2", IsActive = false };
             userManager.Create(user2, "P_assw0rd2");
 
-            var user3 = new ApplicationUser { UserName = "user3@gmail.com", IsActive = true };
+            var user3 = new ApplicationUser { UserName = "user3", IsActive = true };
             userManager.Create(user3, "P_assw0rd3");
 
 

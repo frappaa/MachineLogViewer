@@ -1,13 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Web.Mvc;
 
 namespace MachineLogViewer.Models
 {
-    public class Machine
+    public class EditMachineViewModel
     {
+        public EditMachineViewModel()
+        {
+            UserId = String.Empty;
+            Description = String.Empty;
+        }
+
         public int MachineId { get; set; }
-        
+
         [Required]
         public string Description { get; set; }
 
@@ -16,11 +24,8 @@ namespace MachineLogViewer.Models
         [Display(Name = "Expiry Date")]
         public DateTime ExpiryDate { get; set; }
 
-        public virtual ICollection<LogEntry> LogEntries { get; set; }
-
         public string UserId { get; set; }
 
-        public virtual ApplicationUser User { get; set; }
-
+        public IEnumerable<SelectListItem> UserList { get; set; }
     }
 }

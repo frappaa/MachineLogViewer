@@ -139,8 +139,7 @@ namespace MachineLogViewer.Controllers
                 return HttpNotFound();
             }
 
-            var currentUser = await _userManager.FindByIdAsync
-                                                 (User.Identity.GetUserId());
+            var currentUser = await _userManager.FindByIdAsync(User.Identity.GetUserId());
 
             var isAdmin = User.IsInRole("admin");
 
@@ -203,7 +202,10 @@ namespace MachineLogViewer.Controllers
         [Authorize(Roles = "admin")]
         public ActionResult Create()
         {
-            return View();
+            var viewModel = new EditMachineViewModel();
+            viewModel.ExpiryDate = DateTime.Today.AddMonths(6);
+            viewModel.UserList = GetSelectableUsers(null);
+            return View(viewModel);
         }
 
         // POST: Machine/Create
@@ -212,10 +214,15 @@ namespace MachineLogViewer.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "admin")]
-        public ActionResult Create([Bind(Include = "MachineId,Description,ExpiryDate")] Machine machine)
+        public async Task<ActionResult> Create(EditMachineViewModel viewModel)
         {
             try
             {
+                Machine machine = new Machine();
+                machine.Description = viewModel.Description;
+                machine.ExpiryDate = viewModel.ExpiryDate;
+                machine.User = await _userManager.FindByIdAsync(viewModel.UserId);
+
                 if (ModelState.IsValid)
                 {
                     _db.Machines.Add(machine);
@@ -228,7 +235,7 @@ namespace MachineLogViewer.Controllers
                 //Log the error (uncomment dex variable name and add a line here to write a log.
                 ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
             }
-            return View(machine);
+            return View(viewModel);
         }
 
         // GET: Machine/Edit/5
@@ -244,7 +251,41 @@ namespace MachineLogViewer.Controllers
             {
                 return HttpNotFound();
             }
-            return View(machine);
+
+            var viewModel = new EditMachineViewModel
+            {
+                MachineId = machine.MachineId,
+                Description = machine.Description,
+                ExpiryDate = machine.ExpiryDate,
+                UserId = machine.User != null ? machine.User.Id : ""
+            };
+
+            var items = GetSelectableUsers(machine);
+
+            viewModel.UserList = items;
+
+            return View(viewModel);
+        }
+
+        private List<SelectListItem> GetSelectableUsers(Machine machine)
+        {
+            var users = _userManager.Users.OrderBy(u => u.UserName).ToList()
+                .Where(u => !_userManager.GetRoles(u.Id).Contains("admin")).ToList();
+
+            List<SelectListItem> items = new List<SelectListItem>();
+
+            items.Add(new SelectListItem {Text = "", Value = "", Selected = machine == null || machine.User == null});
+
+            foreach (var user in users)
+            {
+                items.Add(new SelectListItem
+                {
+                    Text = user.UserName,
+                    Value = user.Id,
+                    Selected = (machine != null && machine.User != null && machine.User.Id == user.Id)
+                });
+            }
+            return items;
         }
 
         // POST: Machine/Edit/5
@@ -253,29 +294,26 @@ namespace MachineLogViewer.Controllers
         [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "admin")]
-        public ActionResult EditPost(int? id)
+        public async Task<ActionResult> EditPost(EditMachineViewModel viewModel)
         {
-            if (id == null)
+            try
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            var machineToUpdate = _db.Machines.Find(id);
-            if (TryUpdateModel(machineToUpdate, "",
-               new string[] { "Description", "ExpiryDate" }))
-            {
-                try
-                {
-                    _db.SaveChanges();
+                var machineToUpdate = _db.Machines.Find(viewModel.MachineId);
 
-                    return RedirectToAction("Index");
-                }
-                catch (DataException /* dex */)
-                {
-                    //Log the error (uncomment dex variable name and add a line here to write a log.
-                    ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
-                }
+                machineToUpdate.Description = viewModel.Description;
+                machineToUpdate.ExpiryDate = viewModel.ExpiryDate;
+                machineToUpdate.User = await _userManager.FindByIdAsync(viewModel.UserId);
+                _db.Entry(machineToUpdate).State = System.Data.Entity.EntityState.Modified;
+                await _db.SaveChangesAsync();
+
+                return RedirectToAction("Index");
             }
-            return View(machineToUpdate);
+            catch (DataException /* dex */)
+            {
+                //Log the error (uncomment dex variable name and add a line here to write a log.
+                ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
+            }
+            return View(viewModel);
         }
 
         // GET: Machine/Delete/5

@@ -23,9 +23,10 @@ namespace MachineLogViewer.Models
         {
             base.OnModelCreating(modelBuilder);
 
-            //modelBuilder.Entity<IdentityUserLogin>().HasKey<string>(l => l.UserId);
-            //modelBuilder.Entity<IdentityRole>().HasKey<string>(r => r.Id);
-            //modelBuilder.Entity<IdentityUserRole>().HasKey(r => new { r.RoleId, r.UserId });
+            modelBuilder.Entity<Machine>()
+                .HasOptional(m => m.User)
+                .WithMany()
+                .HasForeignKey(m => m.UserId);
 
             modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
         }
