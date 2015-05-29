@@ -125,7 +125,6 @@ namespace MachineLogViewer.Controllers
                 if (result.Succeeded)
                 {
                     var db = new ApplicationDbContext();
-                    //var us = db.Users.First(u => u.UserName == user.UserName);
 
                     var adminRole = db.Roles.SingleOrDefault(m => m.Name == "admin");
 

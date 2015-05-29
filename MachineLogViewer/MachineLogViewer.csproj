@@ -196,7 +196,6 @@
     <Compile Include="Models\ApplicationDbContext.cs" />
     <Compile Include="Models\ApplicationUser.cs" />
     <Compile Include="Models\EditMachineViewModel.cs" />
-    <Compile Include="Models\IdentityManager.cs" />
     <Compile Include="Models\LogEntry.cs" />
     <Compile Include="Models\Machine.cs" />
     <Compile Include="Models\MachineDetailsViewModel.cs" />

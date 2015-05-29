@@ -44,8 +44,7 @@ namespace MachineLogViewer.Controllers
 
             ViewBag.CurrentFilter = searchString;
 
-            var currentUser = await _userManager.FindByIdAsync
-                                                 (User.Identity.GetUserId());
+            var currentUser = await _userManager.FindByIdAsync(User.Identity.GetUserId());
 
             var isAdmin = User.IsInRole("admin");
 
