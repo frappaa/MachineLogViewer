@@ -6,13 +6,15 @@
     ViewBag.Title = "Machines";
 }
 
-<h2>Machines</h2>
+<h2>@ViewBag.Title</h2>
+
 @if (User.IsInRole("admin"))
 {
     <p>
         @Html.ActionLink("Create New", "Create")
     </p>
 }
+
 @using (Html.BeginForm("Index", "Machine", FormMethod.Get))
 {
     <div class="form-horizontal">

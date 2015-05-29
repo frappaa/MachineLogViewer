@@ -157,7 +157,7 @@ namespace MachineLogViewer.Controllers
         public ActionResult Index()
         {
             var db = new ApplicationDbContext();
-            var users = db.Users;
+            var users = db.Users.OrderBy(u => u.UserName);
             var model = new List<EditUserViewModel>();
             foreach (var user in users)
             {
@@ -216,11 +216,15 @@ namespace MachineLogViewer.Controllers
         {
             var db = new ApplicationDbContext();
             var user = db.Users.First(u => u.Id == id);
-            var model = new EditUserViewModel(user);
             if (user == null)
             {
                 return HttpNotFound();
             }
+            if (user.Machines.Any())
+            {
+                return View("UnableToDelete"); 
+            }
+            var model = new EditUserViewModel(user);
             return View(model);
         }
 

@@ -1,0 +1,12 @@
+﻿@{
+    ViewBag.Title = "Unable to delete";
+}
+
+<hgroup>
+    <h1 class="text-danger">This user is assigned to some machines</h1>
+    <h2 class="text-danger">Please unassign the user from all machines and try deleting again.</h2>
+</hgroup>
+
+<div>
+    @Html.ActionLink("Back", "Index")
+</div>

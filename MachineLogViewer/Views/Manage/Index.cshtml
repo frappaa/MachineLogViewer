@@ -1,6 +1,10 @@
 ﻿@model MachineLogViewer.Models.IndexViewModel
 
-<h2>Manage</h2>
+@{
+    ViewBag.Title = "Manage";
+}
+
+<h2>@ViewBag.Title</h2>
 
 <p class="text-success">@ViewBag.StatusMessage</p>
 <div>

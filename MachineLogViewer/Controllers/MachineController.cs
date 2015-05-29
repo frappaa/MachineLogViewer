@@ -81,7 +81,7 @@ namespace MachineLogViewer.Controllers
             int pageSize = 3;
             int pageNumber = (page ?? 1);
             var filteredMachines = machines.ToList();
-            filteredMachines = filteredMachines.Where(m => isAdmin || (m.User.Id == currentUser.Id && m.ExpiryDate >= DateTime.Today)).ToList();
+            filteredMachines = filteredMachines.Where(m => isAdmin || (m.User != null && m.User.Id == currentUser.Id && m.ExpiryDate >= DateTime.Today)).ToList();
             return View(filteredMachines.ToPagedList(pageNumber, pageSize));
         }
 
@@ -120,7 +120,7 @@ namespace MachineLogViewer.Controllers
             int pageSize = 3;
             int pageNumber = (page ?? 1);
             var filteredMachines = machines.ToList();
-            filteredMachines = filteredMachines.Where(m => (m.User.Id == userId)).ToList();
+            filteredMachines = filteredMachines.Where(m => m.User != null && m.User.Id == userId).ToList();
             return View(filteredMachines.ToPagedList(pageNumber, pageSize));
         }
 
