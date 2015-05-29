@@ -19,6 +19,11 @@ namespace MachineLogViewer.Models
 
     public class RegisterViewModel
     {
+        public RegisterViewModel()
+        {
+            IsActive = true;
+        }
+
         [Required]
         [EmailAddress]
         [Display(Name = "User name")]
@@ -35,13 +40,21 @@ namespace MachineLogViewer.Models
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
 
+        [Required]
+        [Display(Name = "Active?")]
+        public bool IsActive { get; set; }
+
+        [Required]
+        [Display(Name = "Admin?")]
+        public bool IsAdmin { get; set; }
+
         // Return a pre-poulated instance of AppliationUser:
         public ApplicationUser GetUser()
         {
             var user = new ApplicationUser
             {
                 UserName = UserName,
-                IsActive = true,
+                IsActive = IsActive,
             };
             return user;
         }

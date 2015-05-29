@@ -10,6 +10,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using MachineLogViewer.Models;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace MachineLogViewer.Controllers
 {
@@ -107,7 +108,7 @@ namespace MachineLogViewer.Controllers
         [Authorize(Roles = "admin")]
         public ActionResult Register()
         {
-            return View();
+            return View(new RegisterViewModel());
         }
 
         //
@@ -123,7 +124,19 @@ namespace MachineLogViewer.Controllers
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
+                    var db = new ApplicationDbContext();
+                    //var us = db.Users.First(u => u.UserName == user.UserName);
+
+                    var adminRole = db.Roles.SingleOrDefault(m => m.Name == "admin");
+
+                    if (model.IsAdmin)
+                    {
+                        user.Roles.Add(new IdentityUserRole { RoleId = adminRole.Id });
+                        db.Entry(user).State = System.Data.Entity.EntityState.Modified;
+                        await db.SaveChangesAsync();
+                    }
+
+                    //await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
                     
                     // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
                     // Send an email with this link
@@ -161,6 +174,7 @@ namespace MachineLogViewer.Controllers
             var db = new ApplicationDbContext();
             var user = db.Users.First(u => u.Id == id);
             var model = new EditUserViewModel(user);
+            model.IsAdmin = UserManager.GetRoles(user.Id).Contains("admin");
             ViewBag.MessageId = Message;
             return View(model);
         }
@@ -173,6 +187,21 @@ namespace MachineLogViewer.Controllers
             {
                 var db = new ApplicationDbContext();
                 var user = db.Users.First(u => u.Id == model.Id);
+
+                var isAdmin = UserManager.GetRoles(user.Id).Contains("admin");
+
+                var adminRole = db.Roles.SingleOrDefault(m => m.Name == "admin");
+
+                if (!isAdmin && model.IsAdmin)
+                {
+                    user.Roles.Add(new IdentityUserRole {RoleId = adminRole.Id});
+                }
+                else if (isAdmin && !model.IsAdmin)
+                {
+                    var role = user.Roles.First(r => r.RoleId == adminRole.Id);
+                    user.Roles.Remove(role);
+                }
+
                 // Update the user data:
                 user.IsActive = model.IsActive;
                 db.Entry(user).State = System.Data.Entity.EntityState.Modified;
