@@ -147,8 +147,9 @@ namespace MachineLogViewer.Controllers
                 return new HttpUnauthorizedResult();
             }
 
-            ViewBag.CategorySortParm = String.IsNullOrEmpty(sortOrder) ? "category_desc" : "category";
-            ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "";
+            ViewBag.CategorySortParm = sortOrder == "category" ? "category_desc" : "category";
+            ViewBag.DateSortParm = string.IsNullOrEmpty(sortOrder) ? "date_desc" : "";
+            ViewBag.DescrSortParm = sortOrder == "descr" ? "descr_desc" : "descr";
 
             List<SelectListItem> items = new List<SelectListItem>();
             
@@ -177,6 +178,12 @@ namespace MachineLogViewer.Controllers
 
             switch (sortOrder)
             {
+                case "descr_desc":
+                    logEntries = logEntries.OrderByDescending(s => s.Description).ToList();
+                    break;
+                case "descr":
+                    logEntries = logEntries.OrderBy(s => s.Description).ToList();
+                    break;
                 case "category_desc":
                     logEntries = logEntries.OrderByDescending(s => s.Category).ToList();
                     break;

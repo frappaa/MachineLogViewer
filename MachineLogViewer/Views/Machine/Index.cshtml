@@ -37,14 +37,38 @@
     <tr>
         <th>
             @Html.ActionLink("Description", "Index", new { sortOrder = ViewBag.NameSortParm, currentFilter = ViewBag.CurrentFilter })
+            @if (string.IsNullOrEmpty(ViewBag.CurrentSort))
+            {
+                <span class="glyphicon glyphicon-arrow-down"></span>
+            }
+            else if (ViewBag.CurrentSort == "name_desc")
+            {
+                <span class="glyphicon glyphicon-arrow-up"></span>
+            }
         </th>
         <th>
-            @Html.ActionLink("Expiry Date", "Index", new {sortOrder = ViewBag.DateSortParm, currentFilter = ViewBag.CurrentFilter})
+            @Html.ActionLink("Expiry Date", "Index", new { sortOrder = ViewBag.DateSortParm, currentFilter = ViewBag.CurrentFilter })
+            @if (ViewBag.CurrentSort == "Date")
+            {
+                <span class="glyphicon glyphicon-arrow-down"></span>
+            }
+            else if (ViewBag.CurrentSort == "date_desc")
+            {
+                <span class="glyphicon glyphicon-arrow-up"></span>
+            }
         </th>
         @if (User.IsInRole("admin"))
         {
             <th>
-                @Html.ActionLink("User", "Index", new {sortOrder = ViewBag.UserSortParm, currentFilter = ViewBag.CurrentFilter})
+                @Html.ActionLink("User", "Index", new { sortOrder = ViewBag.UserSortParm, currentFilter = ViewBag.CurrentFilter })
+                @if (ViewBag.CurrentSort == "User")
+                {
+                <span class="glyphicon glyphicon-arrow-down"></span>
+                }
+                else if (ViewBag.CurrentSort == "user_desc")
+                {
+                <span class="glyphicon glyphicon-arrow-up"></span>
+                }
             </th>
         }
         <th></th>

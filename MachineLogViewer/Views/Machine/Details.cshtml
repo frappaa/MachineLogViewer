@@ -48,11 +48,37 @@
                 <tr>
                     <th>
                         @Html.ActionLink("Time", "Details", new { sortOrder = ViewBag.DateSortParm, category = ViewBag.Category, startDate = ViewBag.StartDate, endDate = ViewBag.EndDate })
+                        @if (string.IsNullOrEmpty(ViewBag.CurrentSort))
+                        {
+                            <span class="glyphicon glyphicon-arrow-down"></span>
+                        }
+                        else if (ViewBag.CurrentSort == "date_desc")
+                        {
+                            <span class="glyphicon glyphicon-arrow-up"></span>
+                        }
                     </th>
                     <th>
                         @Html.ActionLink("Category", "Details", new { sortOrder = ViewBag.CategorySortParm, category = ViewBag.Category, startDate = ViewBag.StartDate, endDate = ViewBag.EndDate })
+                        @if (ViewBag.CurrentSort == "category")
+                        {
+                            <span class="glyphicon glyphicon-arrow-down"></span>
+                        }
+                        else if (ViewBag.CurrentSort == "category_desc")
+                        {
+                            <span class="glyphicon glyphicon-arrow-up"></span>
+                        }
                     </th>
-                    <th></th>
+                    <th>
+                        @Html.ActionLink("Description", "Details", new { sortOrder = ViewBag.DescrSortParm, category = ViewBag.Category, startDate = ViewBag.StartDate, endDate = ViewBag.EndDate })
+                        @if (ViewBag.CurrentSort == "descr")
+                        {
+                            <span class="glyphicon glyphicon-arrow-down"></span>
+                        }
+                        else if (ViewBag.CurrentSort == "descr_desc")
+                        {
+                            <span class="glyphicon glyphicon-arrow-up"></span>
+                        }
+                    </th>
                 </tr>
                 @foreach (var item in Model.LogEntries)
                 {
@@ -62,6 +88,9 @@
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.Category)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Description)
                         </td>
                     </tr>
                 }

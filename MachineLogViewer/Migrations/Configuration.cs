@@ -40,17 +40,17 @@ namespace MachineLogViewer.Migrations
                 UserName = "admin",
                 IsActive = true
             };
-            userManager.Create(adminUser, "P_assw0rdAdmin");
+            userManager.Create(adminUser, "Passw0rdAdmin");
             userManager.AddToRole(adminUser.Id, "admin");
 
             var user1 = new ApplicationUser { UserName = "user1", IsActive = true };
-            userManager.Create(user1, "P_assw0rd1");
+            userManager.Create(user1, "Passw0rd1");
 
             var user2 = new ApplicationUser { UserName = "user2", IsActive = false };
-            userManager.Create(user2, "P_assw0rd2");
+            userManager.Create(user2, "Passw0rd2");
 
             var user3 = new ApplicationUser { UserName = "user3", IsActive = true };
-            userManager.Create(user3, "P_assw0rd3");
+            userManager.Create(user3, "Passw0rd3");
 
 
             var machines = new List<Machine>
@@ -70,20 +70,20 @@ namespace MachineLogViewer.Migrations
 
             var logEntries = new List<LogEntry>
             {
-                new LogEntry {MachineId = 1, Time = new DateTime(2015, 1, 30, 13, 23, 02), Category = Category.A},
+                new LogEntry {MachineId = 1, Time = new DateTime(2015, 1, 30, 13, 23, 02), Category = Category.A, Description = "A description"},
                 new LogEntry {MachineId = 1, Time = new DateTime(2015, 2, 12, 10, 13, 29), Category = Category.B},
                 new LogEntry {MachineId = 1, Time = new DateTime(2015, 2, 28, 09, 11, 30), Category = Category.A},
                 new LogEntry {MachineId = 2, Time = new DateTime(2015, 3, 30, 08, 02, 56), Category = Category.C},
-                new LogEntry {MachineId = 2, Time = new DateTime(2015, 4, 11, 11, 44, 38), Category = Category.A},
+                new LogEntry {MachineId = 2, Time = new DateTime(2015, 4, 11, 11, 44, 38), Category = Category.F, Description = "Another description"},
                 new LogEntry {MachineId = 2, Time = new DateTime(2015, 4, 13, 23, 11, 52), Category = Category.D},
                 new LogEntry {MachineId = 2, Time = new DateTime(2015, 4, 16, 03, 25, 36), Category = Category.A},
                 new LogEntry {MachineId = 3, Time = new DateTime(2015, 3, 14, 21, 25, 02), Category = Category.A},
                 new LogEntry {MachineId = 3, Time = new DateTime(2015, 3, 20, 21, 03, 43), Category = Category.C},
                 new LogEntry {MachineId = 4, Time = new DateTime(2015, 2, 16, 16, 13, 24), Category = Category.A},
                 new LogEntry {MachineId = 4, Time = new DateTime(2015, 4, 12, 10, 43, 10), Category = Category.D},
-                new LogEntry {MachineId = 5, Time = new DateTime(2015, 4, 09, 21, 52, 05), Category = Category.A},
-                new LogEntry {MachineId = 6, Time = new DateTime(2015, 1, 30, 22, 00, 28), Category = Category.A},
-                new LogEntry {MachineId = 7, Time = new DateTime(2015, 3, 19, 04, 03, 24), Category = Category.B},
+                new LogEntry {MachineId = 5, Time = new DateTime(2015, 4, 09, 21, 52, 05), Category = Category.A, Description = "Bla bla"},
+                new LogEntry {MachineId = 6, Time = new DateTime(2015, 1, 30, 22, 00, 28), Category = Category.E},
+                new LogEntry {MachineId = 7, Time = new DateTime(2015, 3, 19, 04, 03, 24), Category = Category.B, Description = "Descr descr..."},
                 new LogEntry {MachineId = 7, Time = new DateTime(2015, 3, 28, 05, 52, 11), Category = Category.A},
                 new LogEntry {MachineId = 7, Time = new DateTime(2015, 5, 03, 11, 20, 10), Category = Category.C},
             };

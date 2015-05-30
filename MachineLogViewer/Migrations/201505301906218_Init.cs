@@ -15,6 +15,7 @@ namespace MachineLogViewer.Migrations
                         MachineId = c.Int(nullable: false),
                         Time = c.DateTime(nullable: false),
                         Category = c.Int(nullable: false),
+                        Description = c.String(),
                     })
                 .PrimaryKey(t => t.LogEntryId)
                 .ForeignKey("dbo.Machine", t => t.MachineId, cascadeDelete: true)
@@ -25,7 +26,7 @@ namespace MachineLogViewer.Migrations
                 c => new
                     {
                         MachineId = c.Int(nullable: false, identity: true),
-                        Description = c.String(nullable: false),
+                        Description = c.String(),
                         ExpiryDate = c.DateTime(nullable: false),
                         UserId = c.String(maxLength: 128),
                     })

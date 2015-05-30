@@ -7,8 +7,11 @@ namespace MachineLogViewer.Models
     public class Machine
     {
         public int MachineId { get; set; }
+
+        //[Required]
+        //[RegularExpression("^[A-Z0-9]{12}$", ErrorMessage = "The {0} must be exactly 12 characters long.")]
+        //public string Code { get; set; }
         
-        [Required]
         public string Description { get; set; }
 
         [DataType(DataType.Date)]
