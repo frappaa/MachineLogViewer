@@ -37,7 +37,8 @@
         <td>
             @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
             <a href="@Url.Action("IndexByUser", "Machine", new { userId = item.Id })">Machines</a> |
-               @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+            @Html.ActionLink("Reset password", "ResetPassword", new { id = item.Id }) |
+            @Html.ActionLink("Delete", "Delete", new { id = item.Id })
         </td>
     </tr>
 }

@@ -275,8 +275,8 @@ namespace MachineLogViewer.Controllers
 
         private List<SelectListItem> GetSelectableUsers(Machine machine)
         {
-            var users = _userManager.Users.OrderBy(u => u.UserName).ToList()
-                .Where(u => !_userManager.GetRoles(u.Id).Contains("admin")).ToList();
+            var users = _userManager.Users.OrderBy(u => u.UserName).ToList();
+                //.Where(u => !_userManager.GetRoles(u.Id).Contains("admin")).ToList();
 
             List<SelectListItem> items = new List<SelectListItem>();
 

@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
+﻿using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Security;
+using MachineLogViewer.Models;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
-using MachineLogViewer.Models;
-using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace MachineLogViewer.Controllers
 {
@@ -131,7 +130,7 @@ namespace MachineLogViewer.Controllers
                     if (model.IsAdmin)
                     {
                         user.Roles.Add(new IdentityUserRole { RoleId = adminRole.Id });
-                        db.Entry(user).State = System.Data.Entity.EntityState.Modified;
+                        db.Entry(user).State = EntityState.Modified;
                         await db.SaveChangesAsync();
                     }
 
@@ -177,6 +176,7 @@ namespace MachineLogViewer.Controllers
             ViewBag.MessageId = Message;
             return View(model);
         }
+
         [HttpPost]
         [Authorize(Roles = "admin")]
         [ValidateAntiForgeryToken]
@@ -203,13 +203,44 @@ namespace MachineLogViewer.Controllers
 
                 // Update the user data:
                 user.IsActive = model.IsActive;
-                db.Entry(user).State = System.Data.Entity.EntityState.Modified;
+                db.Entry(user).State = EntityState.Modified;
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
             // If we got this far, something failed, redisplay form
             return View(model);
         }
+
+        [Authorize(Roles = "admin")]
+        public ActionResult ResetPassword(string id)
+        {
+            var db = new ApplicationDbContext();
+            var user = db.Users.First(u => u.Id == id);
+            return View(new ResetPasswordViewModel { Id = id, UserName = user.UserName });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
+        public async Task<ActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var userId = model.Id;
+
+            var token = await UserManager.GeneratePasswordResetTokenAsync(userId);
+            var result = await UserManager.ResetPasswordAsync(userId, token, model.NewPassword);
+            if (result.Succeeded)
+            {
+                return RedirectToAction("Index", new { Message = ManageController.ManageMessageId.ChangePasswordSuccess });
+            }
+            AddErrors(result);
+            return View(model);
+        }
+
         [Authorize(Roles = "admin")]
         public ActionResult Delete(string id = null)
         {
@@ -227,7 +258,6 @@ namespace MachineLogViewer.Controllers
             return View(model);
         }
 
-
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "admin")]
@@ -238,19 +268,6 @@ namespace MachineLogViewer.Controllers
             Db.Users.Remove(user);
             Db.SaveChanges();
             return RedirectToAction("Index");
-        }
-
-        //
-        // GET: /Account/ConfirmEmail
-        [AllowAnonymous]
-        public async Task<ActionResult> ConfirmEmail(string userId, string code)
-        {
-            if (userId == null || code == null)
-            {
-                return View("Error");
-            }
-            var result = await UserManager.ConfirmEmailAsync(userId, code);
-            return View(result.Succeeded ? "ConfirmEmail" : "Error");
         }
 
         //
