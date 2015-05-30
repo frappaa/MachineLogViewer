@@ -17,17 +17,12 @@ namespace MachineLogViewer.Models
         [DataType(DataType.DateTime)]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy hh:mm:ss}")]
         [DisplayName("Event Time")]
-        public DateTime Time { get; set; }
+        public DateTime EventTime { get; set; }
 
-        //[DataType(DataType.DateTime)]
-        //[DisplayFormat(DataFormatString = "{0:dd/MM/yyyy hh:mm:ss}")]
-        //[DisplayName("Event Time")]
-        //public DateTime EventTime { get; set; }
-
-        //[DataType(DataType.DateTime)]
-        //[DisplayFormat(DataFormatString = "{0:dd/MM/yyyy hh:mm:ss}")]
-        //[DisplayName("Received Time")]
-        //public DateTime? ReceivedTime { get; set; }
+        [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy hh:mm:ss}")]
+        [DisplayName("Received Time")]
+        public DateTime? ReceivedTime { get; set; }
         
         [Required]
         public Category Category { get; set; }

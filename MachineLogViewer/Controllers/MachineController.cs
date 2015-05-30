@@ -148,8 +148,9 @@ namespace MachineLogViewer.Controllers
             }
 
             ViewBag.CategorySortParm = sortOrder == "category" ? "category_desc" : "category";
-            ViewBag.DateSortParm = string.IsNullOrEmpty(sortOrder) ? "date_desc" : "";
+            ViewBag.EventDateSortParm = string.IsNullOrEmpty(sortOrder) ? "eventdate_desc" : "";
             ViewBag.DescrSortParm = sortOrder == "descr" ? "descr_desc" : "descr";
+            ViewBag.ReceivedDateSortParm = sortOrder == "receiveddate" ? "receiveddate_desc" : "receiveddate";
 
             List<SelectListItem> items = new List<SelectListItem>();
             
@@ -173,8 +174,8 @@ namespace MachineLogViewer.Controllers
 
             var logEntries = machine.LogEntries
                 .Where(le => category == null || le.Category == category)
-                .Where(le => startDate == null || le.Time >= startDate)
-                .Where(le => endDate == null || le.Time <= endDate);
+                .Where(le => startDate == null || le.EventTime >= startDate)
+                .Where(le => endDate == null || le.EventTime <= endDate);
 
             switch (sortOrder)
             {
@@ -190,11 +191,17 @@ namespace MachineLogViewer.Controllers
                 case "category":
                     logEntries = logEntries.OrderBy(s => s.Category).ToList();
                     break;
-                case "date_desc":
-                    logEntries = logEntries.OrderByDescending(s => s.Time).ToList();
+                case "receiveddate_desc":
+                    logEntries = logEntries.OrderByDescending(s => s.ReceivedTime).ToList();
+                    break;
+                case "receiveddate":
+                    logEntries = logEntries.OrderBy(s => s.ReceivedTime).ToList();
+                    break;
+                case "eventdate_desc":
+                    logEntries = logEntries.OrderByDescending(s => s.EventTime).ToList();
                     break;
                 default:
-                    logEntries = logEntries.OrderBy(s => s.Time).ToList();
+                    logEntries = logEntries.OrderBy(s => s.EventTime).ToList();
                     break;
             }
 

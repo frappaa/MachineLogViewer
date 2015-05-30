@@ -13,7 +13,8 @@ namespace MachineLogViewer.Migrations
                     {
                         LogEntryId = c.Long(nullable: false, identity: true),
                         MachineId = c.Int(nullable: false),
-                        Time = c.DateTime(nullable: false),
+                        EventTime = c.DateTime(nullable: false),
+                        ReceivedTime = c.DateTime(),
                         Category = c.Int(nullable: false),
                         Description = c.String(),
                     })

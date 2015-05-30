@@ -70,22 +70,22 @@ namespace MachineLogViewer.Migrations
 
             var logEntries = new List<LogEntry>
             {
-                new LogEntry {MachineId = 1, Time = new DateTime(2015, 1, 30, 13, 23, 02), Category = Category.A, Description = "A description"},
-                new LogEntry {MachineId = 1, Time = new DateTime(2015, 2, 12, 10, 13, 29), Category = Category.B},
-                new LogEntry {MachineId = 1, Time = new DateTime(2015, 2, 28, 09, 11, 30), Category = Category.A},
-                new LogEntry {MachineId = 2, Time = new DateTime(2015, 3, 30, 08, 02, 56), Category = Category.C},
-                new LogEntry {MachineId = 2, Time = new DateTime(2015, 4, 11, 11, 44, 38), Category = Category.F, Description = "Another description"},
-                new LogEntry {MachineId = 2, Time = new DateTime(2015, 4, 13, 23, 11, 52), Category = Category.D},
-                new LogEntry {MachineId = 2, Time = new DateTime(2015, 4, 16, 03, 25, 36), Category = Category.A},
-                new LogEntry {MachineId = 3, Time = new DateTime(2015, 3, 14, 21, 25, 02), Category = Category.A},
-                new LogEntry {MachineId = 3, Time = new DateTime(2015, 3, 20, 21, 03, 43), Category = Category.C},
-                new LogEntry {MachineId = 4, Time = new DateTime(2015, 2, 16, 16, 13, 24), Category = Category.A},
-                new LogEntry {MachineId = 4, Time = new DateTime(2015, 4, 12, 10, 43, 10), Category = Category.D},
-                new LogEntry {MachineId = 5, Time = new DateTime(2015, 4, 09, 21, 52, 05), Category = Category.A, Description = "Bla bla"},
-                new LogEntry {MachineId = 6, Time = new DateTime(2015, 1, 30, 22, 00, 28), Category = Category.E},
-                new LogEntry {MachineId = 7, Time = new DateTime(2015, 3, 19, 04, 03, 24), Category = Category.B, Description = "Descr descr..."},
-                new LogEntry {MachineId = 7, Time = new DateTime(2015, 3, 28, 05, 52, 11), Category = Category.A},
-                new LogEntry {MachineId = 7, Time = new DateTime(2015, 5, 03, 11, 20, 10), Category = Category.C},
+                new LogEntry {MachineId = 1, EventTime = new DateTime(2015, 1, 30, 13, 23, 02), ReceivedTime = new DateTime(2015, 2, 1, 14, 12, 09), Category = Category.A, Description = "A description" },
+                new LogEntry {MachineId = 1, EventTime = new DateTime(2015, 2, 12, 10, 13, 29), ReceivedTime = new DateTime(2015, 2, 13, 10, 22, 29), Category = Category.B },
+                new LogEntry {MachineId = 1, EventTime = new DateTime(2015, 2, 28, 09, 11, 30), ReceivedTime = new DateTime(2015, 2, 28, 14, 39, 19), Category = Category.A },
+                new LogEntry {MachineId = 2, EventTime = new DateTime(2015, 3, 30, 08, 02, 56), ReceivedTime = new DateTime(2015, 3, 30, 14, 37, 01), Category = Category.C },
+                new LogEntry {MachineId = 2, EventTime = new DateTime(2015, 4, 11, 11, 44, 38), ReceivedTime = new DateTime(2015, 4, 11, 18, 42, 29), Category = Category.F, Description = "Another description" },
+                new LogEntry {MachineId = 2, EventTime = new DateTime(2015, 4, 13, 23, 11, 52), ReceivedTime = new DateTime(2015, 4, 14, 10, 02, 27), Category = Category.D },
+                new LogEntry {MachineId = 2, EventTime = new DateTime(2015, 4, 16, 03, 25, 36), ReceivedTime = new DateTime(2015, 4, 17, 21, 02, 26), Category = Category.A },
+                new LogEntry {MachineId = 3, EventTime = new DateTime(2015, 3, 14, 21, 25, 02), ReceivedTime = new DateTime(2015, 3, 16, 20, 05, 23), Category = Category.A },
+                new LogEntry {MachineId = 3, EventTime = new DateTime(2015, 3, 20, 21, 03, 43), ReceivedTime = new DateTime(2015, 3, 21, 10, 34, 26), Category = Category.C },
+                new LogEntry {MachineId = 4, EventTime = new DateTime(2015, 2, 16, 16, 13, 24), ReceivedTime = new DateTime(2015, 2, 16, 05, 13, 41), Category = Category.A },
+                new LogEntry {MachineId = 4, EventTime = new DateTime(2015, 4, 12, 10, 43, 10), ReceivedTime = new DateTime(2015, 4, 12, 14, 11, 49), Category = Category.D },
+                new LogEntry {MachineId = 5, EventTime = new DateTime(2015, 4, 09, 21, 52, 05), ReceivedTime = new DateTime(2015, 4, 10, 04, 52, 28), Category = Category.A, Description = "Bla bla" },
+                new LogEntry {MachineId = 6, EventTime = new DateTime(2015, 1, 30, 22, 00, 28), ReceivedTime = new DateTime(2015, 1, 31, 06, 40, 15), Category = Category.E },
+                new LogEntry {MachineId = 7, EventTime = new DateTime(2015, 3, 19, 04, 03, 24), ReceivedTime = new DateTime(2015, 3, 19, 14, 36, 00), Category = Category.B, Description = "Descr descr..." },
+                new LogEntry {MachineId = 7, EventTime = new DateTime(2015, 3, 28, 05, 52, 11), ReceivedTime = new DateTime(2015, 3, 30, 09, 37, 04), Category = Category.A },
+                new LogEntry {MachineId = 7, EventTime = new DateTime(2015, 5, 03, 11, 20, 10), ReceivedTime = new DateTime(2015, 5, 10, 12, 01, 35), Category = Category.C },
             };
 
             logEntries.ForEach(le => context.LogEntries.Add(le));
