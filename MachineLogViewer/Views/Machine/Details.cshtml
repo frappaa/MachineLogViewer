@@ -143,7 +143,14 @@
             Page @(Model.LogEntries.PageCount < Model.LogEntries.PageNumber ? 0 : Model.LogEntries.PageNumber) of @Model.LogEntries.PageCount
 
             @Html.PagedListPager(Model.LogEntries, page => Url.Action("Details",
-    new { page, sortOrder = ViewBag.CurrentSort, category = ViewBag.Category, startDate = ViewBag.StartDate, endDate = ViewBag.EndDate }))
+    new
+    {
+        page,
+        sortOrder = ViewBag.CurrentSort,
+        category = ((List<SelectListItem>)ViewBag.Category).SingleOrDefault(c => c.Selected) != null ? ((List<SelectListItem>)ViewBag.Category).Single(c => c.Selected).Value : "",
+        startDate = ViewBag.StartDate == null ? "" : ((DateTime)ViewBag.StartDate).ToString("yyyy-MM-dd"),
+        endDate = ViewBag.EndDate == null ? "" : ((DateTime)ViewBag.EndDate).ToString("yyyy-MM-dd"),
+    }))
         </dd>
     </dl>
 </div>
