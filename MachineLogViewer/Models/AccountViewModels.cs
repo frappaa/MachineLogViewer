@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace MachineLogViewer.Models
 {
@@ -24,8 +22,11 @@ namespace MachineLogViewer.Models
         }
 
         [Required]
+        [RegularExpression("^[A-Za-z0-9]{5,20}$", ErrorMessage = "The {0} must contain at least 5 and not more than 20 alphanumeric characters.")]
         [Display(Name = "User name")]
         public string UserName { get; set; }
+
+        public string Description { get; set; }
 
         [Required]
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
@@ -46,12 +47,12 @@ namespace MachineLogViewer.Models
         [Display(Name = "Admin?")]
         public bool IsAdmin { get; set; }
 
-        // Return a pre-poulated instance of AppliationUser:
         public ApplicationUser GetUser()
         {
             var user = new ApplicationUser
             {
                 UserName = UserName,
+                Description = Description,
                 IsActive = IsActive,
             };
             return user;
@@ -66,6 +67,7 @@ namespace MachineLogViewer.Models
         public EditUserViewModel(ApplicationUser user)
         {
             Id = user.Id;
+            Description = user.Description;
             UserName = user.UserName;
             IsActive = user.IsActive;
         }
@@ -74,7 +76,10 @@ namespace MachineLogViewer.Models
 
         [Required]
         [Display(Name = "User Name")]
+        [RegularExpression("^[A-Za-z0-9]{5,20}$", ErrorMessage = "The {0} must contain at least 5 and not more than 20 alphanumeric characters.")]
         public string UserName { get; set; }
+
+        public string Description { get; set; }
 
         [Required]
         [Display(Name = "Active?")]

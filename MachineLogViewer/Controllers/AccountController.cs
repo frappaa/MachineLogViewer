@@ -202,6 +202,8 @@ namespace MachineLogViewer.Controllers
                 }
 
                 // Update the user data:
+                user.UserName = model.UserName;
+                user.Description = model.Description;
                 user.IsActive = model.IsActive;
                 db.Entry(user).State = EntityState.Modified;
                 await db.SaveChangesAsync();

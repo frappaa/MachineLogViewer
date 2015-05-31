@@ -15,6 +15,8 @@ namespace MachineLogViewer.Models
         [Display(Name = "Active?")]
         public bool IsActive { get; set; }
 
+        public string Description { get; set; }
+
         public virtual Collection<Machine> Machines { get; set; }
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)

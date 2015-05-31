@@ -43,6 +43,7 @@ namespace MachineLogViewer.Migrations
                     {
                         Id = c.String(nullable: false, maxLength: 128),
                         IsActive = c.Boolean(nullable: false),
+                        Description = c.String(),
                         Email = c.String(maxLength: 256),
                         EmailConfirmed = c.Boolean(nullable: false),
                         PasswordHash = c.String(),
