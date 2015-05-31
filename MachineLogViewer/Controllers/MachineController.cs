@@ -281,6 +281,17 @@ namespace MachineLogViewer.Controllers
                 return HttpNotFound();
             }
 
+            var viewModel = GetEditMachineViewModel(machine);
+
+            var items = GetSelectableUsers(machine);
+
+            viewModel.UserList = items;
+
+            return View(viewModel);
+        }
+
+        private static EditMachineViewModel GetEditMachineViewModel(Machine machine)
+        {
             var viewModel = new EditMachineViewModel
             {
                 MachineId = machine.MachineId,
@@ -289,10 +300,26 @@ namespace MachineLogViewer.Controllers
                 ExpiryDate = machine.ExpiryDate,
                 UserId = machine.User != null ? machine.User.Id : ""
             };
+            return viewModel;
+        }
 
-            var items = GetSelectableUsers(machine);
+        public ActionResult EditDescription(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Machine machine = _db.Machines.Find(id);
+            if (machine == null)
+            {
+                return HttpNotFound();
+            }
 
-            viewModel.UserList = items;
+            var viewModel = GetEditMachineViewModel(machine);
+
+            //var items = GetSelectableUsers(machine);
+
+            //viewModel.UserList = items;
 
             return View(viewModel);
         }
@@ -342,6 +369,33 @@ namespace MachineLogViewer.Controllers
                     machineToUpdate.User = await _userManager.FindByIdAsync(viewModel.UserId);
                     machineToUpdate.UserId = viewModel.UserId;
                 }
+                _db.Entry(machineToUpdate).State = System.Data.Entity.EntityState.Modified;
+                await _db.SaveChangesAsync();
+
+                return RedirectToAction("Index");
+            }
+            catch (DataException /* dex */)
+            {
+                //Log the error (uncomment dex variable name and add a line here to write a log.
+                ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
+            }
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> EditDescription(EditMachineViewModel viewModel)
+        {
+            var machineToUpdate = _db.Machines.Find(viewModel.MachineId);
+            if (machineToUpdate.User == null || machineToUpdate.User.Id != User.Identity.GetUserId())
+            {
+                return new HttpUnauthorizedResult();
+            }
+
+            try
+            {
+                machineToUpdate.Description = viewModel.Description;
+                
                 _db.Entry(machineToUpdate).State = System.Data.Entity.EntityState.Modified;
                 await _db.SaveChangesAsync();
 

@@ -108,6 +108,11 @@
                 @Html.ActionLink("Edit", "Edit", new {id = item.MachineId})
                 @: |
             }
+            else
+            {
+                @Html.ActionLink("Edit", "EditDescription", new { id = item.MachineId })
+                @: |
+            }
 
             @Html.ActionLink("Logs", "Details", new {id = item.MachineId})
 
