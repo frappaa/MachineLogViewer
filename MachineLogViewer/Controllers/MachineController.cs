@@ -29,7 +29,8 @@ namespace MachineLogViewer.Controllers
         public async Task<ActionResult> Index(string sortOrder, string currentFilter, string searchString, int? page)
         {
             ViewBag.CurrentSort = sortOrder;
-            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewBag.CodeSortParm = String.IsNullOrEmpty(sortOrder) ? "code_desc" : "";
+            ViewBag.DescrSortParm = sortOrder == "Descr" ? "descr_desc" : "Descr";
             ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
             ViewBag.UserSortParm = sortOrder == "User" ? "user_desc" : "User";
 
@@ -53,19 +54,25 @@ namespace MachineLogViewer.Controllers
 
             if (!String.IsNullOrEmpty(searchString))
             {
-                machines = machines.Where(s => s.Description.Contains(searchString));
+                machines = machines.Where(s => s.Code.Contains(searchString));
             }
 
             switch (sortOrder)
             {
-                case "name_desc":
-                    machines = machines.OrderByDescending(s => s.Description);
+                case "code_desc":
+                    machines = machines.OrderByDescending(s => s.Code);
                     break;
                 case "Date":
                     machines = machines.OrderBy(s => s.ExpiryDate);
                     break;
                 case "date_desc":
                     machines = machines.OrderByDescending(s => s.ExpiryDate);
+                    break;
+                case "Descr":
+                    machines = machines.OrderBy(s => s.Description);
+                    break;
+                case "descr_desc":
+                    machines = machines.OrderByDescending(s => s.Description);
                     break;
                 case "User":
                     machines = machines.OrderBy(s => s.User.UserName);
@@ -74,7 +81,7 @@ namespace MachineLogViewer.Controllers
                     machines = machines.OrderByDescending(s => s.User.UserName);
                     break;
                 default:
-                    machines = machines.OrderBy(s => s.Description);
+                    machines = machines.OrderBy(s => s.Code);
                     break;
             }
             int pageSize = 3;
@@ -95,7 +102,8 @@ namespace MachineLogViewer.Controllers
             ViewBag.UserName = user.UserName;
 
             ViewBag.CurrentSort = sortOrder;
-            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewBag.CodeSortParm = String.IsNullOrEmpty(sortOrder) ? "code_desc" : "";
+            ViewBag.DescrSortParm = sortOrder == "Descr" ? "descr_desc" : "Descr";
             ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
 
             var machines = from m in _db.Machines
@@ -103,8 +111,8 @@ namespace MachineLogViewer.Controllers
 
             switch (sortOrder)
             {
-                case "name_desc":
-                    machines = machines.OrderByDescending(s => s.Description);
+                case "code_desc":
+                    machines = machines.OrderByDescending(s => s.Code);
                     break;
                 case "Date":
                     machines = machines.OrderBy(s => s.ExpiryDate);
@@ -112,8 +120,14 @@ namespace MachineLogViewer.Controllers
                 case "date_desc":
                     machines = machines.OrderByDescending(s => s.ExpiryDate);
                     break;
-                default:
+                case "Descr":
                     machines = machines.OrderBy(s => s.Description);
+                    break;
+                case "descr_desc":
+                    machines = machines.OrderByDescending(s => s.Description);
+                    break;
+                default:
+                    machines = machines.OrderBy(s => s.Code);
                     break;
             }
             int pageSize = 3;
@@ -168,7 +182,7 @@ namespace MachineLogViewer.Controllers
             MachineDetailsViewModel viewModel = new MachineDetailsViewModel
             {
                 MachineId = machine.MachineId,
-                Description = machine.Description,
+                Code = machine.Code,
                 ExpiryDate = machine.ExpiryDate
             };
 
@@ -216,7 +230,7 @@ namespace MachineLogViewer.Controllers
         public ActionResult Create()
         {
             var viewModel = new EditMachineViewModel();
-            viewModel.ExpiryDate = DateTime.Today.AddMonths(6);
+            viewModel.ExpiryDate = DateTime.Today.AddYears(1);
             viewModel.UserList = GetSelectableUsers(null);
             return View(viewModel);
         }
@@ -232,6 +246,7 @@ namespace MachineLogViewer.Controllers
             try
             {
                 Machine machine = new Machine();
+                machine.Code = viewModel.Code;
                 machine.Description = viewModel.Description;
                 machine.ExpiryDate = viewModel.ExpiryDate;
                 machine.User = await _userManager.FindByIdAsync(viewModel.UserId);
@@ -268,6 +283,7 @@ namespace MachineLogViewer.Controllers
             var viewModel = new EditMachineViewModel
             {
                 MachineId = machine.MachineId,
+                Code = machine.Code,
                 Description = machine.Description,
                 ExpiryDate = machine.ExpiryDate,
                 UserId = machine.User != null ? machine.User.Id : ""
@@ -312,7 +328,7 @@ namespace MachineLogViewer.Controllers
             try
             {
                 var machineToUpdate = _db.Machines.Find(viewModel.MachineId);
-
+                machineToUpdate.Code = viewModel.Code;
                 machineToUpdate.Description = viewModel.Description;
                 machineToUpdate.ExpiryDate = viewModel.ExpiryDate;
                 if (string.IsNullOrEmpty(viewModel.UserId))
@@ -376,6 +392,15 @@ namespace MachineLogViewer.Controllers
                 return RedirectToAction("Delete", new { id = id, saveChangesError = true });
             }
             return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "admin")]
+        public JsonResult DoesMachineCodeExist(string code)
+        {
+            Machine machine = _db.Machines.SingleOrDefault(m => m.Code == code);
+
+            return Json(machine == null);
         }
 
         protected override void Dispose(bool disposing)

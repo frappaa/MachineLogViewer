@@ -11,18 +11,29 @@
 <table class="table">
     <tr>
         <th>
-            @Html.ActionLink("Description", "IndexByUser", new { userId = ViewBag.UserId, sortOrder = ViewBag.NameSortParm })
+            @Html.ActionLink("Code", "IndexByUser", new { userId = ViewBag.UserId, sortOrder = ViewBag.CodeSortParm })
             @if (string.IsNullOrEmpty(ViewBag.CurrentSort))
             {
                 <span class="glyphicon glyphicon-arrow-down"></span>
             }
-            else if (ViewBag.CurrentSort == "name_desc")
+            else if (ViewBag.CurrentSort == "code_desc")
             {
                 <span class="glyphicon glyphicon-arrow-up"></span>
             }
         </th>
         <th>
-            @Html.ActionLink("Expiry Date", "IndexByUser", new { userId = ViewBag.UserId, sortOrder = ViewBag.DateSortParm })
+            @Html.ActionLink("Description", "IndexByUser", new {userId = ViewBag.UserId, sortOrder = ViewBag.DescrSortParm})
+            @if (ViewBag.CurrentSort == "Descr")
+            {
+                <span class="glyphicon glyphicon-arrow-down"></span>
+            }
+            else if (ViewBag.CurrentSort == "descr_desc")
+            {
+                <span class="glyphicon glyphicon-arrow-up"></span>
+            }
+        </th>
+        <th>
+            @Html.ActionLink("Expiry Date", "IndexByUser", new {userId = ViewBag.UserId, sortOrder = ViewBag.DateSortParm})
             @if (ViewBag.CurrentSort == "Date")
             {
                 <span class="glyphicon glyphicon-arrow-down"></span>
@@ -39,12 +50,15 @@
     {
         <tr>
             <td>
+                @Html.DisplayFor(modelItem => item.Code)
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.Description)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.ExpiryDate)
             </td>
-            
+
         </tr>
     }
 

@@ -9,7 +9,7 @@ namespace MachineLogViewer.Models
     {
         public int MachineId { get; set; }
 
-        public string Description { get; set; }
+        public string Code { get; set; }
 
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]

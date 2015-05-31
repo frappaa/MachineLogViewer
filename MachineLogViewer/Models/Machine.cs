@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Data;
 
 namespace MachineLogViewer.Models
 {
@@ -8,9 +9,9 @@ namespace MachineLogViewer.Models
     {
         public int MachineId { get; set; }
 
-        //[Required]
-        //[RegularExpression("^[A-Z0-9]{12}$", ErrorMessage = "The {0} must be exactly 12 characters long.")]
-        //public string Code { get; set; }
+        [Required]
+        [RegularExpression("^[A-Z0-9]{12}$", ErrorMessage = "The {0} must contain exactly 12 alphanumeric characters.")]
+        public string Code { get; set; }
         
         public string Description { get; set; }
 

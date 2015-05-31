@@ -27,12 +27,14 @@ namespace MachineLogViewer.Migrations
                 c => new
                     {
                         MachineId = c.Int(nullable: false, identity: true),
+                        Code = c.String(nullable: false, maxLength: 12),
                         Description = c.String(),
                         ExpiryDate = c.DateTime(nullable: false),
                         UserId = c.String(maxLength: 128),
                     })
                 .PrimaryKey(t => t.MachineId)
                 .ForeignKey("dbo.AspNetUsers", t => t.UserId)
+                .Index(t => t.Code, unique: true)
                 .Index(t => t.UserId);
             
             CreateTable(
@@ -121,6 +123,7 @@ namespace MachineLogViewer.Migrations
             DropIndex("dbo.AspNetUserClaims", new[] { "UserId" });
             DropIndex("dbo.AspNetUsers", "UserNameIndex");
             DropIndex("dbo.Machine", new[] { "UserId" });
+            DropIndex("dbo.Machine", new[] { "Code" });
             DropIndex("dbo.LogEntry", new[] { "MachineId" });
             DropTable("dbo.AspNetRoles");
             DropTable("dbo.AspNetUserRoles");

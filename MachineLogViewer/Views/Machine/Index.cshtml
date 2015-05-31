@@ -19,7 +19,7 @@
 {
     <div class="form-horizontal">
         <div class="form-group">
-            <label class="control-label col-md-2">Description:</label>
+            <label class="control-label col-md-2">Code:</label>
             <div class="col-md-10">
                 @Html.TextBox("SearchString", ViewBag.CurrentFilter as string, new {@class = "form-control"})
             </div>
@@ -36,18 +36,29 @@
 <table class="table">
     <tr>
         <th>
-            @Html.ActionLink("Description", "Index", new { sortOrder = ViewBag.NameSortParm, currentFilter = ViewBag.CurrentFilter })
+            @Html.ActionLink("Code", "Index", new { sortOrder = ViewBag.CodeSortParm, currentFilter = ViewBag.CurrentFilter })
             @if (string.IsNullOrEmpty(ViewBag.CurrentSort))
             {
                 <span class="glyphicon glyphicon-arrow-down"></span>
             }
-            else if (ViewBag.CurrentSort == "name_desc")
+            else if (ViewBag.CurrentSort == "code_desc")
             {
                 <span class="glyphicon glyphicon-arrow-up"></span>
             }
         </th>
         <th>
-            @Html.ActionLink("Expiry Date", "Index", new { sortOrder = ViewBag.DateSortParm, currentFilter = ViewBag.CurrentFilter })
+            @Html.ActionLink("Description", "Index", new {sortOrder = ViewBag.DescrSortParm, currentFilter = ViewBag.CurrentFilter})
+            @if (ViewBag.CurrentSort == "Descr")
+            {
+                <span class="glyphicon glyphicon-arrow-down"></span>
+            }
+            else if (ViewBag.CurrentSort == "descr_desc")
+            {
+                <span class="glyphicon glyphicon-arrow-up"></span>
+            }
+        </th>
+        <th>
+            @Html.ActionLink("Expiry Date", "Index", new {sortOrder = ViewBag.DateSortParm, currentFilter = ViewBag.CurrentFilter})
             @if (ViewBag.CurrentSort == "Date")
             {
                 <span class="glyphicon glyphicon-arrow-down"></span>
@@ -60,14 +71,14 @@
         @if (User.IsInRole("admin"))
         {
             <th>
-                @Html.ActionLink("User", "Index", new { sortOrder = ViewBag.UserSortParm, currentFilter = ViewBag.CurrentFilter })
+                @Html.ActionLink("User", "Index", new {sortOrder = ViewBag.UserSortParm, currentFilter = ViewBag.CurrentFilter})
                 @if (ViewBag.CurrentSort == "User")
                 {
-                <span class="glyphicon glyphicon-arrow-down"></span>
+                    <span class="glyphicon glyphicon-arrow-down"></span>
                 }
                 else if (ViewBag.CurrentSort == "user_desc")
                 {
-                <span class="glyphicon glyphicon-arrow-up"></span>
+                    <span class="glyphicon glyphicon-arrow-up"></span>
                 }
             </th>
         }
@@ -76,6 +87,9 @@
 
 @foreach (var item in Model) {
     <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Code)
+        </td>
         <td>
             @Html.DisplayFor(modelItem => item.Description)
         </td>
@@ -91,16 +105,16 @@
         <td>
             @if (User.IsInRole("admin"))
             {
-                @Html.ActionLink("Edit", "Edit", new { id = item.MachineId })
+                @Html.ActionLink("Edit", "Edit", new {id = item.MachineId})
                 @: |
             }
 
-            @Html.ActionLink("Logs", "Details", new { id = item.MachineId })
-            
+            @Html.ActionLink("Logs", "Details", new {id = item.MachineId})
+
             @if (User.IsInRole("admin"))
             {
                 @: |
-                @Html.ActionLink("Delete", "Delete", new { id = item.MachineId })
+                @Html.ActionLink("Delete", "Delete", new {id = item.MachineId})
             }
         </td>
     </tr>
