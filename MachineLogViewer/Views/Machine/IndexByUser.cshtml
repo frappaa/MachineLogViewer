@@ -12,9 +12,25 @@
     <tr>
         <th>
             @Html.ActionLink("Description", "IndexByUser", new { userId = ViewBag.UserId, sortOrder = ViewBag.NameSortParm })
+            @if (string.IsNullOrEmpty(ViewBag.CurrentSort))
+            {
+                <span class="glyphicon glyphicon-arrow-down"></span>
+            }
+            else if (ViewBag.CurrentSort == "name_desc")
+            {
+                <span class="glyphicon glyphicon-arrow-up"></span>
+            }
         </th>
         <th>
             @Html.ActionLink("Expiry Date", "IndexByUser", new { userId = ViewBag.UserId, sortOrder = ViewBag.DateSortParm })
+            @if (ViewBag.CurrentSort == "Date")
+            {
+                <span class="glyphicon glyphicon-arrow-down"></span>
+            }
+            else if (ViewBag.CurrentSort == "date_desc")
+            {
+                <span class="glyphicon glyphicon-arrow-up"></span>
+            }
         </th>
         <th></th>
     </tr>
