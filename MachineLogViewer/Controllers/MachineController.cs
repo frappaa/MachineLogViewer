@@ -230,6 +230,7 @@ namespace MachineLogViewer.Controllers
         public ActionResult Create()
         {
             var viewModel = new EditMachineViewModel();
+            viewModel.MachineId = 0;
             viewModel.ExpiryDate = DateTime.Today.AddYears(1);
             viewModel.UserList = GetSelectableUsers(null);
             return View(viewModel);
@@ -246,7 +247,7 @@ namespace MachineLogViewer.Controllers
             try
             {
                 Machine machine = new Machine();
-                machine.Code = viewModel.Code;
+                machine.Code = viewModel.Code.ToUpper();
                 machine.Description = viewModel.Description;
                 machine.ExpiryDate = viewModel.ExpiryDate;
                 machine.User = await _userManager.FindByIdAsync(viewModel.UserId);
@@ -328,7 +329,7 @@ namespace MachineLogViewer.Controllers
             try
             {
                 var machineToUpdate = _db.Machines.Find(viewModel.MachineId);
-                machineToUpdate.Code = viewModel.Code;
+                machineToUpdate.Code = viewModel.Code.ToUpper();
                 machineToUpdate.Description = viewModel.Description;
                 machineToUpdate.ExpiryDate = viewModel.ExpiryDate;
                 if (string.IsNullOrEmpty(viewModel.UserId))
@@ -396,9 +397,9 @@ namespace MachineLogViewer.Controllers
 
         [HttpPost]
         [Authorize(Roles = "admin")]
-        public JsonResult DoesMachineCodeExist(string code)
+        public JsonResult DoesMachineCodeExist(string code, int MachineId)
         {
-            Machine machine = _db.Machines.SingleOrDefault(m => m.Code == code);
+            Machine machine = _db.Machines.SingleOrDefault(m => m.MachineId != MachineId && m.Code.ToUpper() == code.ToUpper());
 
             return Json(machine == null);
         }
