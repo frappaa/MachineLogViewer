@@ -1,4 +1,6 @@
-﻿@model IEnumerable<MachineLogViewer.Models.EditUserViewModel>
+﻿@model PagedList.IPagedList<MachineLogViewer.Models.EditUserViewModel>
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css"/>
 
 @{
     ViewBag.Title = "Users";
@@ -12,16 +14,48 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.UserName)
+            @Html.ActionLink("User Name", "Index", new { sortOrder = ViewBag.NameSortParm })
+            @if (string.IsNullOrEmpty(ViewBag.CurrentSort))
+            {
+                <span class="glyphicon glyphicon-arrow-down"></span>
+            }
+            else if (ViewBag.CurrentSort == "name_desc")
+            {
+                <span class="glyphicon glyphicon-arrow-up"></span>
+            }
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Description)
+            @Html.ActionLink("Description", "Index", new { sortOrder = ViewBag.DescrSortParm })
+            @if (ViewBag.CurrentSort == "Descr")
+            {
+                <span class="glyphicon glyphicon-arrow-down"></span>
+            }
+            else if (ViewBag.CurrentSort == "descr_desc")
+            {
+                <span class="glyphicon glyphicon-arrow-up"></span>
+            }
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.IsActive)
+            @Html.ActionLink("Active?", "Index", new { sortOrder = ViewBag.ActiveSortParm })
+            @if (ViewBag.CurrentSort == "Active")
+            {
+                <span class="glyphicon glyphicon-arrow-down"></span>
+            }
+            else if (ViewBag.CurrentSort == "active_desc")
+            {
+                <span class="glyphicon glyphicon-arrow-up"></span>
+            }
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.IsAdmin)
+            @Html.ActionLink("Admin?", "Index", new { sortOrder = ViewBag.AdminSortParm })
+            @if (ViewBag.CurrentSort == "Admin")
+            {
+                <span class="glyphicon glyphicon-arrow-down"></span>
+            }
+            else if (ViewBag.CurrentSort == "admin_desc")
+            {
+                <span class="glyphicon glyphicon-arrow-up"></span>
+            }
         </th>
         <th></th>
     </tr>
@@ -50,3 +84,8 @@
 }
 
 </table>
+<br />
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+
+@Html.PagedListPager(Model, page => Url.Action("Index",
+    new { page, sortOrder = ViewBag.CurrentSort }))

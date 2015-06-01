@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
+using PagedList;
 
 namespace MachineLogViewer.Controllers
 {
@@ -152,8 +154,14 @@ namespace MachineLogViewer.Controllers
         }
 
         [Authorize(Roles = "admin")]
-        public ActionResult Index()
+        public ActionResult Index(string sortOrder, int? page)
         {
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewBag.DescrSortParm = sortOrder == "Descr" ? "descr_desc" : "Descr";
+            ViewBag.ActiveSortParm = sortOrder == "Active" ? "active_desc" : "Active";
+            ViewBag.AdminSortParm = sortOrder == "Admin" ? "admin_desc" : "Admin";
+
             var db = new ApplicationDbContext();
             var users = db.Users.OrderBy(u => u.UserName);
             var model = new List<EditUserViewModel>();
@@ -163,7 +171,39 @@ namespace MachineLogViewer.Controllers
                 u.IsAdmin = UserManager.GetRoles(user.Id).Contains("admin");
                 model.Add(u);
             }
-            return View(model);
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    model = model.OrderByDescending(s => s.UserName).ToList();
+                    break;
+                case "Active":
+                    model = model.OrderBy(s => s.IsActive).ToList();
+                    break;
+                case "active_desc":
+                    model = model.OrderByDescending(s => s.IsActive).ToList();
+                    break;
+                case "Descr":
+                    model = model.OrderBy(s => s.Description).ToList();
+                    break;
+                case "descr_desc":
+                    model = model.OrderByDescending(s => s.Description).ToList();
+                    break;
+                case "Admin":
+                    model = model.OrderBy(s => s.IsAdmin).ToList();
+                    break;
+                case "admin_desc":
+                    model = model.OrderByDescending(s => s.IsAdmin).ToList();
+                    break;
+                default:
+                    model = model.OrderBy(s => s.UserName).ToList();
+                    break;
+            }
+
+            int pageSize = 3;
+            int pageNumber = (page ?? 1);
+
+            return View(model.ToPagedList(pageNumber, pageSize));
         }
 
         [Authorize(Roles = "admin")]

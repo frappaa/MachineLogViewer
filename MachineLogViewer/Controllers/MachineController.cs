@@ -315,6 +315,11 @@ namespace MachineLogViewer.Controllers
                 return HttpNotFound();
             }
 
+            if (machine.ExpiryDate < DateTime.Today)
+            {
+                return new HttpUnauthorizedResult(); 
+            }
+
             var viewModel = GetEditMachineViewModel(machine);
 
             //var items = GetSelectableUsers(machine);
@@ -387,7 +392,7 @@ namespace MachineLogViewer.Controllers
         public async Task<ActionResult> EditDescription(EditMachineViewModel viewModel)
         {
             var machineToUpdate = _db.Machines.Find(viewModel.MachineId);
-            if (machineToUpdate.User == null || machineToUpdate.User.Id != User.Identity.GetUserId())
+            if (machineToUpdate.User == null || machineToUpdate.User.Id != User.Identity.GetUserId() || machineToUpdate.ExpiryDate < DateTime.Today)
             {
                 return new HttpUnauthorizedResult();
             }
