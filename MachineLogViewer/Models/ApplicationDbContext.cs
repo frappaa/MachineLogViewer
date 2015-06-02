@@ -20,6 +20,7 @@ namespace MachineLogViewer.Models
 
         public DbSet<Machine> Machines { get; set; }
         public DbSet<LogEntry> LogEntries { get; set; }
+        public DbSet<Takings> Takings { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

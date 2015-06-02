@@ -137,8 +137,44 @@ namespace MachineLogViewer.Controllers
             return View(filteredMachines.ToPagedList(pageNumber, pageSize));
         }
 
-        // GET: Machine/Details/5
-        public async Task<ActionResult> Details(int? id, string sortOrder, Category? category, DateTime? startDate, DateTime? endDate, int? page)
+        public async Task<ActionResult> Takings(int? id, string sortOrder, DateTime? startDate, DateTime? endDate,
+            int? page)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Machine machine = _db.Machines.Find(id);
+
+            if (machine == null)
+            {
+                return HttpNotFound();
+            }
+
+            ViewBag.MachineCode = machine.Code;
+            ViewBag.MachineExpiryDate = machine.ExpiryDate;
+            ViewBag.StartDate = startDate;
+            ViewBag.EndDate = endDate;
+
+            var currentUser = await _userManager.FindByIdAsync(User.Identity.GetUserId());
+
+            var isAdmin = User.IsInRole("admin");
+
+            if (!isAdmin && (machine.User.Id != currentUser.Id || machine.ExpiryDate < DateTime.Today))
+            {
+                return new HttpUnauthorizedResult();
+            }
+
+            var takings = machine.Takings
+                .Where(t => startDate == null || t.Date >= startDate)
+                .Where(t => endDate == null || t.Date <= endDate);
+
+            int pageSize = 2;
+            int pageNumber = (page ?? 1);
+            return View(takings.ToPagedList(pageNumber, pageSize));
+        }
+
+        public async Task<ActionResult> Log(int? id, string sortOrder, Category? category, DateTime? startDate, DateTime? endDate, int? page)
         {
             ViewBag.CurrentSort = sortOrder;
             if (id == null)
@@ -179,7 +215,7 @@ namespace MachineLogViewer.Controllers
             ViewBag.StartDate = startDate;
             ViewBag.EndDate = endDate;
 
-            MachineDetailsViewModel viewModel = new MachineDetailsViewModel
+            LogViewModel viewModel = new LogViewModel
             {
                 MachineId = machine.MachineId,
                 Code = machine.Code,

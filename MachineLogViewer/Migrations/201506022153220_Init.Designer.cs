@@ -13,7 +13,7 @@ namespace MachineLogViewer.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "201505311914570_Init"; }
+            get { return "201506022153220_Init"; }
         }
         
         string IMigrationMetadata.Source

@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using PagedList;
 
 namespace MachineLogViewer.Models
 {
-    public class MachineDetailsViewModel
+    public class LogViewModel
     {
         public int MachineId { get; set; }
 

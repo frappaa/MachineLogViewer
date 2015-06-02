@@ -187,9 +187,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201505311914570_Init.cs" />
-    <Compile Include="Migrations\201505311914570_Init.Designer.cs">
-      <DependentUpon>201505311914570_Init.cs</DependentUpon>
+    <Compile Include="Migrations\201506022153220_Init.cs" />
+    <Compile Include="Migrations\201506022153220_Init.Designer.cs">
+      <DependentUpon>201506022153220_Init.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -198,8 +198,9 @@
     <Compile Include="Models\EditMachineViewModel.cs" />
     <Compile Include="Models\LogEntry.cs" />
     <Compile Include="Models\Machine.cs" />
-    <Compile Include="Models\MachineDetailsViewModel.cs" />
+    <Compile Include="Models\LogViewModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\Takings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -260,7 +261,7 @@
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Machine\Create.cshtml" />
     <Content Include="Views\Machine\Delete.cshtml" />
-    <Content Include="Views\Machine\Details.cshtml" />
+    <Content Include="Views\Machine\Log.cshtml" />
     <Content Include="Views\Machine\Edit.cshtml" />
     <Content Include="Views\Machine\Index.cshtml" />
     <Content Include="Views\Account\Edit.cshtml" />
@@ -270,6 +271,7 @@
     <Content Include="Views\Account\UnableToDelete.cshtml" />
     <Content Include="Views\Account\ResetPassword.cshtml" />
     <Content Include="Views\Machine\EditDescription.cshtml" />
+    <Content Include="Views\Machine\Takings.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -279,8 +281,8 @@
     <None Include="Project_Readme.html" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201505311914570_Init.resx">
-      <DependentUpon>201505311914570_Init.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201506022153220_Init.resx">
+      <DependentUpon>201506022153220_Init.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

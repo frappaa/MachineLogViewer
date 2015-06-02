@@ -38,6 +38,34 @@ namespace MachineLogViewer.Migrations
                 .Index(t => t.UserId);
             
             CreateTable(
+                "dbo.Takings",
+                c => new
+                    {
+                        TakingsId = c.Long(nullable: false, identity: true),
+                        MachineId = c.Int(nullable: false),
+                        Date = c.DateTime(nullable: false),
+                        Currency = c.String(nullable: false, maxLength: 3),
+                        SumTotal = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        SumCash = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        SumCashless = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        SumProduct1 = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        SumProduct2 = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        SumProduct3 = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        SumProduct4 = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        SumProduct5 = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        SumProduct6 = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        SumProduct7 = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        SumProduct8 = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        SumProduct9 = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        SumProduct10 = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        SumProduct11 = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        SumProduct12 = c.Decimal(nullable: false, precision: 18, scale: 2),
+                    })
+                .PrimaryKey(t => t.TakingsId)
+                .ForeignKey("dbo.Machine", t => t.MachineId, cascadeDelete: true)
+                .Index(t => t.MachineId);
+            
+            CreateTable(
                 "dbo.AspNetUsers",
                 c => new
                     {
@@ -116,6 +144,7 @@ namespace MachineLogViewer.Migrations
             DropForeignKey("dbo.Machine", "UserId", "dbo.AspNetUsers");
             DropForeignKey("dbo.AspNetUserLogins", "UserId", "dbo.AspNetUsers");
             DropForeignKey("dbo.AspNetUserClaims", "UserId", "dbo.AspNetUsers");
+            DropForeignKey("dbo.Takings", "MachineId", "dbo.Machine");
             DropForeignKey("dbo.LogEntry", "MachineId", "dbo.Machine");
             DropIndex("dbo.AspNetRoles", "RoleNameIndex");
             DropIndex("dbo.AspNetUserRoles", new[] { "RoleId" });
@@ -123,6 +152,7 @@ namespace MachineLogViewer.Migrations
             DropIndex("dbo.AspNetUserLogins", new[] { "UserId" });
             DropIndex("dbo.AspNetUserClaims", new[] { "UserId" });
             DropIndex("dbo.AspNetUsers", "UserNameIndex");
+            DropIndex("dbo.Takings", new[] { "MachineId" });
             DropIndex("dbo.Machine", new[] { "UserId" });
             DropIndex("dbo.Machine", new[] { "Code" });
             DropIndex("dbo.LogEntry", new[] { "MachineId" });
@@ -131,6 +161,7 @@ namespace MachineLogViewer.Migrations
             DropTable("dbo.AspNetUserLogins");
             DropTable("dbo.AspNetUserClaims");
             DropTable("dbo.AspNetUsers");
+            DropTable("dbo.Takings");
             DropTable("dbo.Machine");
             DropTable("dbo.LogEntry");
         }

@@ -105,7 +105,7 @@
         <td>
             @if (User.IsInRole("admin"))
             {
-                @Html.ActionLink("Edit", "Edit", new {id = item.MachineId})
+                @Html.ActionLink("Edit", "Edit", new { id = item.MachineId })
                 @: |
             }
             else
@@ -114,12 +114,16 @@
                 @: |
             }
 
-            @Html.ActionLink("Logs", "Details", new {id = item.MachineId})
+            @Html.ActionLink("Log", "Log", new { id = item.MachineId })
+
+            |
+
+            @Html.ActionLink("Takings", "Takings", new { id = item.MachineId })
 
             @if (User.IsInRole("admin"))
             {
                 @: |
-                @Html.ActionLink("Delete", "Delete", new {id = item.MachineId})
+                @Html.ActionLink("Delete", "Delete", new { id = item.MachineId })
             }
         </td>
     </tr>

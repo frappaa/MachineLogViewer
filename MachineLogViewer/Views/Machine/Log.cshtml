@@ -1,12 +1,10 @@
-﻿@using MachineLogViewer.Models
-@model MachineLogViewer.Models.MachineDetailsViewModel
-
-@using PagedList.Mvc;
+﻿@using PagedList.Mvc
+@model MachineLogViewer.Models.LogViewModel
 <link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 
 
 @{
-    ViewBag.Title = "Logs";
+    ViewBag.Title = "Log";
 }
 
 <h2>@ViewBag.Title</h2>
@@ -16,7 +14,7 @@
     <hr />
     <dl class="dl-horizontal">
         <dd>
-            @using (Html.BeginForm("Details", "Machine", FormMethod.Get))
+            @using (Html.BeginForm("Log", "Machine", FormMethod.Get))
             {
                 <div class="form-horizontal">
                     <div class="form-group">
@@ -47,7 +45,7 @@
             <table class="table">
                 <tr>
                     <th>
-                        @Html.ActionLink("Event Time", "Details",
+                        @Html.ActionLink("Event Time", "Log",
                             new
                             {
                                 sortOrder = ViewBag.EventDateSortParm,
@@ -67,7 +65,7 @@
                     </th>
 
                     <th>
-                        @Html.ActionLink("Received Time", "Details",
+                        @Html.ActionLink("Received Time", "Log",
                         new
                         {
                             sortOrder = ViewBag.ReceivedDateSortParm,
@@ -86,7 +84,7 @@
 
                     </th>
                     <th>
-                        @Html.ActionLink("Category", "Details",
+                        @Html.ActionLink("Category", "Log",
                         new
                         {
                             sortOrder = ViewBag.CategorySortParm,
@@ -104,7 +102,7 @@
                         }
                     </th>
                     <th>
-                        @Html.ActionLink("Description", "Details", new
+                        @Html.ActionLink("Description", "Log", new
                         {
                             sortOrder = ViewBag.DescrSortParm,
                             category = ((List<SelectListItem>)ViewBag.Category).SingleOrDefault(c => c.Selected) != null ? ((List<SelectListItem>)ViewBag.Category).Single(c => c.Selected).Value : "",
@@ -142,7 +140,7 @@
             <br />
             Page @(Model.LogEntries.PageCount < Model.LogEntries.PageNumber ? 0 : Model.LogEntries.PageNumber) of @Model.LogEntries.PageCount
 
-            @Html.PagedListPager(Model.LogEntries, page => Url.Action("Details",
+            @Html.PagedListPager(Model.LogEntries, page => Url.Action("Log",
     new
     {
         page,

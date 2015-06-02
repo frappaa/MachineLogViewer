@@ -1,0 +1,168 @@
+﻿@using PagedList.Mvc
+@model PagedList.IPagedList<MachineLogViewer.Models.Takings>
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+
+@{
+    ViewBag.Title = "Takings";
+}
+
+<h2>@ViewBag.Title</h2>
+
+
+<div>
+    <h4>@ViewBag.MachineCode - Expiry Date: @ViewBag.MachineExpiryDate.ToString("dd/MM/yyyy")</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dd>
+            @using (Html.BeginForm("Takings", "Machine", FormMethod.Get))
+            {
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <label class="control-label col-md-2">After:</label>
+                        <div class="col-md-10">
+                            @Html.TextBox("StartDate", "", new { @id = "after", @class = "form-control", @data_val = "true", @data_val_date = "The field Event After must be a date.", @name = "After", @type = "date", @aria_required = "false", @aria_invalid = "false", @aria_describedby = "After-error" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-2">Before:</label>
+                        <div class="col-md-10">
+                            @Html.TextBox("EndDate", "", new { @id = "before", @class = "form-control", @data_val = "true", @data_val_date = "The field Event Before must be a date.", @name = "Before", @type = "date", @aria_required = "false", @aria_invalid = "false", @aria_describedby = "Before-error" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-10">
+                            <input type="submit" value="Search" class="btn btn-default" />
+                        </div>
+                    </div>
+                </div>
+            }
+            <table class="table">
+                <tr>
+                    <th>
+                        Date
+                    </th>
+                    <th>
+                        Curr.
+                    </th>
+                    <th>
+                        Total
+                    </th>
+                    <th>
+                        Cash
+                    </th>
+                    <th>
+                        C.less
+                    </th>
+                    <th>
+                        P. 1
+                    </th>
+                    <th>
+                        P. 2
+                    </th>
+                    <th>
+                        P. 3
+                    </th>
+                    <th>
+                        P. 4
+                    </th>
+                    <th>
+                        P. 5
+                    </th>
+                    <th>
+                        P. 6
+                    </th>
+                    <th>
+                        P. 7
+                    </th>
+                    <th>
+                        P. 8
+                    </th>
+                    <th>
+                        P. 9
+                    </th>
+                    <th>
+                        P. 10
+                    </th>
+                    <th>
+                        P. 11
+                    </th>
+                    <th>
+                        P. 12
+                    </th>
+                </tr>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Date)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Currency)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SumTotal)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SumCash)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SumCashless)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SumProduct1)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SumProduct2)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SumProduct3)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SumProduct4)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SumProduct5)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SumProduct6)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SumProduct7)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SumProduct8)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SumProduct9)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SumProduct10)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SumProduct11)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SumProduct12)
+                        </td>
+                    </tr>
+                }
+            </table>
+            <br />
+            Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+
+            @Html.PagedListPager(Model, page => Url.Action("Takings",
+    new
+    {
+        page,
+        startDate = ViewBag.StartDate == null ? "" : ((DateTime)ViewBag.StartDate).ToString("yyyy-MM-dd"),
+        endDate = ViewBag.EndDate == null ? "" : ((DateTime)ViewBag.EndDate).ToString("yyyy-MM-dd"),
+    }))
+        </dd>
+    </dl>
+</div>
+
+
+<p>
+    @Html.ActionLink("Back", "Index")
+</p>
