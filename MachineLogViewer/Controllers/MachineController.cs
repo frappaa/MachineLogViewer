@@ -166,8 +166,8 @@ namespace MachineLogViewer.Controllers
             }
 
             var takings = machine.Takings
-                .Where(t => startDate == null || t.Date >= startDate)
-                .Where(t => endDate == null || t.Date <= endDate);
+                .Where(t => (startDate == null || t.Date >= startDate) && (endDate == null || t.Date <= endDate))
+                .OrderBy(t => t.Date);
 
             int pageSize = 2;
             int pageNumber = (page ?? 1);
@@ -223,9 +223,10 @@ namespace MachineLogViewer.Controllers
             };
 
             var logEntries = machine.LogEntries
-                .Where(le => category == null || le.Category == category)
-                .Where(le => startDate == null || le.EventTime >= startDate)
-                .Where(le => endDate == null || le.EventTime <= endDate);
+                .Where(le =>
+                    (category == null || le.Category == category) &&
+                    (startDate == null || le.EventTime >= startDate) &&
+                    (endDate == null || le.EventTime <= endDate));
 
             switch (sortOrder)
             {
@@ -358,17 +359,12 @@ namespace MachineLogViewer.Controllers
 
             var viewModel = GetEditMachineViewModel(machine);
 
-            //var items = GetSelectableUsers(machine);
-
-            //viewModel.UserList = items;
-
             return View(viewModel);
         }
 
         private List<SelectListItem> GetSelectableUsers(Machine machine)
         {
             var users = _userManager.Users.OrderBy(u => u.UserName).ToList();
-                //.Where(u => !_userManager.GetRoles(u.Id).Contains("admin")).ToList();
 
             List<SelectListItem> items = new List<SelectListItem>();
 
