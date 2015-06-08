@@ -76,18 +76,26 @@ namespace MachineLogViewer.Controllers
                 return View(model);
             }
 
-            // This doesn't count login failures towards account lockout
-            // To enable password failures to trigger account lockout, change to shouldLockout: true
-            var result = await SignInManager.PasswordSignInAsync(model.UserName, model.Password, isPersistent: false, shouldLockout: true);
-            if (result == SignInStatus.Success)
+            var db = new ApplicationDbContext();
+            var user = db.Users.FirstOrDefault(u => u.UserName == model.UserName);
+            SignInStatus result;
+            if (user == null)
             {
-                var db = new ApplicationDbContext();
-                var user = db.Users.First(u => u.UserName == model.UserName);
+                result = SignInStatus.Failure;
+            }
+            else if (!user.IsActive)
+            {
+                result = SignInStatus.LockedOut;
+            }
+            else 
+            {
 
-                if (!user.IsActive)
-                {
-                    result = SignInStatus.LockedOut;
-                }
+                // This doesn't count login failures towards account lockout
+                // To enable password failures to trigger account lockout, change to shouldLockout: true
+                result =
+                    await
+                        SignInManager.PasswordSignInAsync(model.UserName, model.Password, isPersistent: false,
+                            shouldLockout: true);
             }
 
             switch (result)
@@ -200,7 +208,7 @@ namespace MachineLogViewer.Controllers
                     break;
             }
 
-            int pageSize = 3;
+            int pageSize = 20;
             int pageNumber = (page ?? 1);
 
             return View(model.ToPagedList(pageNumber, pageSize));

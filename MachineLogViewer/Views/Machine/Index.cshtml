@@ -11,7 +11,10 @@
 @if (User.IsInRole("admin"))
 {
     <p>
-        @Html.ActionLink("Create New", "Create")
+        <a href="@Url.Action("Create", "Machine")" class="btn btn-success">
+            <span class="glyphicon glyphicon-plus-sign"></span>
+            Create
+        </a>
     </p>
 }
 
@@ -19,15 +22,15 @@
 {
     <div class="form-horizontal">
         <div class="form-group">
-            <label class="control-label col-md-2">Code:</label>
-            <div class="col-md-10">
-                @Html.TextBox("SearchString", ViewBag.CurrentFilter as string, new {@class = "form-control"})
-            </div>
-        </div>
- 
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Search" class="btn btn-default" />
+            <div class="col-sm-3 col-md-3 pull-left">
+                <div class="input-group">
+                    @Html.TextBox("SearchString", ViewBag.CurrentFilter as string, new { @class = "form-control", placeholder = "Code" })
+                    <div class="input-group-btn">
+                        <button value="Search" class="btn btn-primary">
+                            <i class="glyphicon glyphicon-search"></i>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -47,7 +50,7 @@
             }
         </th>
         <th>
-            @Html.ActionLink("Description", "Index", new {sortOrder = ViewBag.DescrSortParm, currentFilter = ViewBag.CurrentFilter})
+            @Html.ActionLink("Description", "Index", new { sortOrder = ViewBag.DescrSortParm, currentFilter = ViewBag.CurrentFilter })
             @if (ViewBag.CurrentSort == "Descr")
             {
                 <span class="glyphicon glyphicon-arrow-down"></span>
@@ -58,7 +61,7 @@
             }
         </th>
         <th>
-            @Html.ActionLink("Expiry Date", "Index", new {sortOrder = ViewBag.DateSortParm, currentFilter = ViewBag.CurrentFilter})
+            @Html.ActionLink("Expiry Date", "Index", new { sortOrder = ViewBag.DateSortParm, currentFilter = ViewBag.CurrentFilter })
             @if (ViewBag.CurrentSort == "Date")
             {
                 <span class="glyphicon glyphicon-arrow-down"></span>
@@ -71,7 +74,7 @@
         @if (User.IsInRole("admin"))
         {
             <th>
-                @Html.ActionLink("User", "Index", new {sortOrder = ViewBag.UserSortParm, currentFilter = ViewBag.CurrentFilter})
+                @Html.ActionLink("User", "Index", new { sortOrder = ViewBag.UserSortParm, currentFilter = ViewBag.CurrentFilter })
                 @if (ViewBag.CurrentSort == "User")
                 {
                     <span class="glyphicon glyphicon-arrow-down"></span>
@@ -85,49 +88,56 @@
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Code)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Description)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ExpiryDate)
-        </td>
-        @if (User.IsInRole("admin"))
-        {
+    @foreach (var item in Model)
+    {
+        <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.User.UserName)
+                @Html.DisplayFor(modelItem => item.Code)
             </td>
-        }
-        <td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ExpiryDate)
+            </td>
             @if (User.IsInRole("admin"))
             {
-                @Html.ActionLink("Edit", "Edit", new { id = item.MachineId })
-                @: |
+                <td>
+                    @Html.DisplayFor(modelItem => item.User.UserName)
+                </td>
             }
-            else
-            {
-                @Html.ActionLink("Edit", "EditDescription", new { id = item.MachineId })
-                @: |
-            }
-
-            @Html.ActionLink("Log", "Log", new { id = item.MachineId })
-
-            |
-
-            @Html.ActionLink("Takings", "Takings", new { id = item.MachineId })
-
-            @if (User.IsInRole("admin"))
-            {
-                @: |
-                @Html.ActionLink("Delete", "Delete", new { id = item.MachineId })
-            }
-        </td>
-    </tr>
-}
+            <td>
+                <div class="pull-left">
+                    <div class="button-group">
+                        @if (User.IsInRole("admin"))
+                        {
+                            <a href="@Url.Action("Edit", "Machine", new {id = item.MachineId})" class="btn btn-default btn-sm" title="Edit">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                            </a>
+                        }
+                        else
+                        {
+                            <a href="@Url.Action("EditDescription", "Machine", new {id = item.MachineId})" class="btn btn-default btn-sm" title="Edit">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                            </a>
+                        }
+                        <a href="@Url.Action("Log", "Machine", new {id = item.MachineId})" class="btn btn-default btn-sm" title="Log">
+                            <span class="glyphicon glyphicon-list"></span>
+                        </a>
+                        <a href="@Url.Action("Takings", "Machine", new {id = item.MachineId})" class="btn btn-default btn-sm" title="Takings">
+                            <span class="glyphicon glyphicon-usd"></span>
+                        </a>
+                        @if (User.IsInRole("admin"))
+                        {
+                            <a href="@Url.Action("Delete", "Machine", new {id = item.MachineId})" class="btn btn-default btn-sm" title="Delete">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </a>
+                        }
+                    </div>
+                </div>
+            </td>
+        </tr>
+    }
 
 </table>
 <br />

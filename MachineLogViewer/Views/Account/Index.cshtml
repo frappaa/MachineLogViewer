@@ -9,7 +9,10 @@
 <h2>@ViewBag.Title</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Register")
+    <a href="@Url.Action("Register", "Account")" class="btn btn-success">
+        <span class="glyphicon glyphicon-plus-sign"></span>
+        Create New
+    </a>
 </p>
 <table class="table">
     <tr>
@@ -75,10 +78,27 @@
             @Html.DisplayFor(modelItem => item.IsAdmin)
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-            <a href="@Url.Action("IndexByUser", "Machine", new { userId = item.Id })">Machines</a> |
-            @Html.ActionLink("Reset password", "ResetPassword", new { id = item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+            <div class="pull-left">
+                <div class="button-group">
+                    <a href="@Url.Action("Edit", "Account", new {id = item.Id})" class="btn btn-default btn-sm" title="Edit">
+                        <span class="glyphicon glyphicon-pencil"></span>
+                    </a>
+                    <a href="@Url.Action("IndexByUser", "Machine", new { userId = item.Id })" class="btn btn-default btn-sm" title="Machines">
+                        <span class="glyphicon glyphicon-list"></span>
+                    </a>
+                    <a href="@Url.Action("ResetPassword", "Account", new {id = item.Id})" class="btn btn-default btn-sm" title="Reset password">
+                        <span class="glyphicon glyphicon-cog"></span>
+                    </a>
+                    <a href="@Url.Action("Delete", "Account", new {id = item.Id})" class="btn btn-default btn-sm" title="Delete">
+                        <span class="glyphicon glyphicon-trash"></span>
+                    </a>
+                    @*@Html.ActionLink("Edit", "Edit", new {id = item.Id}) |
+                    <a href="@Url.Action("IndexByUser", "Machine", new {userId = item.Id})">Machines</a> |
+                    @Html.ActionLink("Reset password", "ResetPassword", new {id = item.Id}) |
+                    @Html.ActionLink("Delete", "Delete", new {id = item.Id})*@
+
+                </div>
+            </div>
         </td>
     </tr>
 }
