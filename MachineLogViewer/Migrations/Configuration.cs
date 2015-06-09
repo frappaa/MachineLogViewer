@@ -71,22 +71,22 @@ namespace MachineLogViewer.Migrations
 
             var logEntries = new List<LogEntry>
             {
-                new LogEntry { MachineId = 1, EventTime = new DateTime(2015, 1, 30, 13, 23, 02), ReceivedTime = new DateTime(2015, 2, 1, 14, 12, 09), Category = Category.A, Description = "A description" },
-                new LogEntry { MachineId = 1, EventTime = new DateTime(2015, 2, 12, 10, 13, 29), ReceivedTime = new DateTime(2015, 2, 13, 10, 22, 29), Category = Category.B },
-                new LogEntry { MachineId = 1, EventTime = new DateTime(2015, 2, 28, 09, 11, 30), ReceivedTime = new DateTime(2015, 2, 28, 14, 39, 19), Category = Category.A },
-                new LogEntry { MachineId = 2, EventTime = new DateTime(2015, 3, 30, 08, 02, 56), ReceivedTime = new DateTime(2015, 3, 30, 14, 37, 01), Category = Category.C },
-                new LogEntry { MachineId = 2, EventTime = new DateTime(2015, 4, 11, 11, 44, 38), ReceivedTime = new DateTime(2015, 4, 11, 18, 42, 29), Category = Category.F, Description = "Another description" },
-                new LogEntry { MachineId = 2, EventTime = new DateTime(2015, 4, 13, 23, 11, 52), ReceivedTime = new DateTime(2015, 4, 14, 10, 02, 27), Category = Category.D },
-                new LogEntry { MachineId = 2, EventTime = new DateTime(2015, 4, 16, 03, 25, 36), ReceivedTime = new DateTime(2015, 4, 17, 21, 02, 26), Category = Category.A },
-                new LogEntry { MachineId = 3, EventTime = new DateTime(2015, 3, 14, 21, 25, 02), ReceivedTime = new DateTime(2015, 3, 16, 20, 05, 23), Category = Category.A },
-                new LogEntry { MachineId = 3, EventTime = new DateTime(2015, 3, 20, 21, 03, 43), ReceivedTime = new DateTime(2015, 3, 21, 10, 34, 26), Category = Category.C },
-                new LogEntry { MachineId = 4, EventTime = new DateTime(2015, 2, 16, 16, 13, 24), ReceivedTime = new DateTime(2015, 2, 16, 05, 13, 41), Category = Category.A },
-                new LogEntry { MachineId = 4, EventTime = new DateTime(2015, 4, 12, 10, 43, 10), ReceivedTime = new DateTime(2015, 4, 12, 14, 11, 49), Category = Category.D },
-                new LogEntry { MachineId = 5, EventTime = new DateTime(2015, 4, 09, 21, 52, 05), ReceivedTime = new DateTime(2015, 4, 10, 04, 52, 28), Category = Category.A, Description = "Bla bla" },
-                new LogEntry { MachineId = 6, EventTime = new DateTime(2015, 1, 30, 22, 00, 28), ReceivedTime = new DateTime(2015, 1, 31, 06, 40, 15), Category = Category.E },
-                new LogEntry { MachineId = 7, EventTime = new DateTime(2015, 3, 19, 04, 03, 24), ReceivedTime = new DateTime(2015, 3, 19, 14, 36, 00), Category = Category.B, Description = "Descr descr..." },
-                new LogEntry { MachineId = 7, EventTime = new DateTime(2015, 3, 28, 05, 52, 11), ReceivedTime = new DateTime(2015, 3, 30, 09, 37, 04), Category = Category.A },
-                new LogEntry { MachineId = 7, EventTime = new DateTime(2015, 5, 03, 11, 20, 10), ReceivedTime = new DateTime(2015, 5, 10, 12, 01, 35), Category = Category.C },
+                new LogEntry { MachineId = 1, EventTime = new DateTime(2015, 1, 30, 13, 23, 02), ReceivedTime = new DateTime(2015, 2, 1, 14, 12, 09), Category = 4, Description = "temp. error II cycle(run)" },
+                new LogEntry { MachineId = 1, EventTime = new DateTime(2015, 2, 12, 10, 13, 29), ReceivedTime = new DateTime(2015, 2, 13, 10, 22, 29), Category = 9, Description = "mdb: cashflow error 60 sec." },
+                new LogEntry { MachineId = 1, EventTime = new DateTime(2015, 2, 28, 09, 11, 30), ReceivedTime = new DateTime(2015, 2, 28, 14, 39, 19), Category = 5, Description = "temp. not reach after long timeout" },
+                new LogEntry { MachineId = 2, EventTime = new DateTime(2015, 3, 30, 08, 02, 56), ReceivedTime = new DateTime(2015, 3, 30, 14, 37, 01), Category = 2, Description = "motor blocked" },
+                new LogEntry { MachineId = 2, EventTime = new DateTime(2015, 4, 11, 11, 44, 38), ReceivedTime = new DateTime(2015, 4, 11, 18, 42, 29), Category = 11, Description = "Another description" },
+                new LogEntry { MachineId = 2, EventTime = new DateTime(2015, 4, 13, 23, 11, 52), ReceivedTime = new DateTime(2015, 4, 14, 10, 02, 27), Category = 5, Description = "temp. not reach after long timeout" },
+                new LogEntry { MachineId = 2, EventTime = new DateTime(2015, 4, 16, 03, 25, 36), ReceivedTime = new DateTime(2015, 4, 17, 21, 02, 26), Category = 18, Description = "motor not connected" },
+                new LogEntry { MachineId = 3, EventTime = new DateTime(2015, 3, 14, 21, 25, 02), ReceivedTime = new DateTime(2015, 3, 16, 20, 05, 23), Category = 8, Description = "mdb: bill reader error 60 sec." },
+                new LogEntry { MachineId = 3, EventTime = new DateTime(2015, 3, 20, 21, 03, 43), ReceivedTime = new DateTime(2015, 3, 21, 10, 34, 26), Category = 98, Description = "temp. error low sensor 2" },
+                new LogEntry { MachineId = 4, EventTime = new DateTime(2015, 2, 16, 16, 13, 24), ReceivedTime = new DateTime(2015, 2, 16, 05, 13, 41), Category = 2, Description = "motor blocked" },
+                new LogEntry { MachineId = 4, EventTime = new DateTime(2015, 4, 12, 10, 43, 10), ReceivedTime = new DateTime(2015, 4, 12, 14, 11, 49), Category = 146, Description = "mdb: cashflow error 146" },
+                new LogEntry { MachineId = 5, EventTime = new DateTime(2015, 4, 09, 21, 52, 05), ReceivedTime = new DateTime(2015, 4, 10, 04, 52, 28), Category = 63, Description = "Bla bla" },
+                new LogEntry { MachineId = 6, EventTime = new DateTime(2015, 1, 30, 22, 00, 28), ReceivedTime = new DateTime(2015, 1, 31, 06, 40, 15), Category = 130, Description = "mdb: bill reader checksum error" },
+                new LogEntry { MachineId = 7, EventTime = new DateTime(2015, 3, 19, 04, 03, 24), ReceivedTime = new DateTime(2015, 3, 19, 14, 36, 00), Category = 27, Description = "Descr descr..." },
+                new LogEntry { MachineId = 7, EventTime = new DateTime(2015, 3, 28, 05, 52, 11), ReceivedTime = new DateTime(2015, 3, 30, 09, 37, 04), Category = 17, Description = "motor in cc" },
+                new LogEntry { MachineId = 7, EventTime = new DateTime(2015, 5, 03, 11, 20, 10), ReceivedTime = new DateTime(2015, 5, 10, 12, 01, 35), Category = 147, Description = "mdb: cashflow tube jam" },
             };
 
             logEntries.ForEach(le => context.LogEntries.Add(le));
@@ -113,6 +113,41 @@ namespace MachineLogViewer.Migrations
             };
 
             takings.ForEach(t => context.Takings.Add(t));
+            context.SaveChanges();
+
+            var logDescriptions = new List<LogDescription>
+            {
+                new LogDescription { Value = 2, Description = "motor blocked"},
+                new LogDescription { Value = 17, Description = "motor in cc"},
+                new LogDescription { Value = 18, Description = "motor not connected"},
+                new LogDescription { Value = 3, Description = "temp. error I cycle(startup)"},
+                new LogDescription { Value = 4, Description = "temp. error II cycle(run)"},
+                new LogDescription { Value = 5, Description = "temp. not reach after long timeout"},
+                new LogDescription { Value = 7, Description = "mdb: tag reader error 60 sec." },
+                new LogDescription { Value = 8, Description = "mdb: bill reader error 60 sec."},
+                new LogDescription { Value = 9, Description = "mdb: cashflow error 60 sec."},
+                new LogDescription { Value = 97, Description = "temp. error low sensor 1"},
+                new LogDescription { Value = 98, Description = "temp. error low sensor 2"},
+                new LogDescription { Value = 99, Description = "temp. error high sensor 1"},
+                new LogDescription { Value = 100, Description = "temp. error high sensor 2"},
+                new LogDescription { Value = 128, Description = "mdb: bill reader motor defective"},
+                new LogDescription { Value = 129, Description = "mdb: bill reader sensor defective"},
+                new LogDescription { Value = 130, Description = "mdb: bill reader checksum error"},
+                new LogDescription { Value = 131, Description = "mdb: bill reader bill jam"},
+                new LogDescription { Value = 132, Description = "mdb: bill reader cash box out of position"}, // originally 131
+                new LogDescription { Value = 144, Description = "mdb: cashflow defective tube sensor"},
+                new LogDescription { Value = 145, Description = "mdb: cashflow error 145"},
+                new LogDescription { Value = 146, Description = "mdb: cashflow error 146"},
+                new LogDescription { Value = 147, Description = "mdb: cashflow tube jam"},
+                new LogDescription { Value = 148, Description = "mdb: cashflow error 148"},
+                new LogDescription { Value = 149, Description = "mdb: cashflow error 149"},
+                new LogDescription { Value = 150, Description = "mdb: cashflow error 150"},
+                new LogDescription { Value = 151, Description = "mdb: cashflow error 151"},
+                new LogDescription { Value = 152, Description = "mdb: cashflow error 152"},
+                new LogDescription { Value = 153, Description = "mdb: cashflow error 153"}
+            };
+
+            logDescriptions.ForEach(d => context.LogDescriptions.Add(d));
             context.SaveChanges();
 
             base.Seed(context);

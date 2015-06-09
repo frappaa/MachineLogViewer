@@ -18,7 +18,7 @@
             {
                 <div class="form-horizontal">
                     <div class="form-group">
-                        <label class="control-label col-md-2">Category:</label>
+                        <label class="control-label col-md-2">Value:</label>
                         <div class="col-md-10">
                             @Html.DropDownList("Category", (IEnumerable<SelectListItem>)ViewBag.Category, new { @class = "form-control" })
                         </div>
@@ -87,7 +87,7 @@
 
                     </th>
                     <th>
-                        @Html.ActionLink("Category", "Log",
+                        @Html.ActionLink("Value", "Log",
                         new
                         {
                             sortOrder = ViewBag.CategorySortParm,

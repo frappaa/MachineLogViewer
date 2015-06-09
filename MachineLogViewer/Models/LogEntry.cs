@@ -4,11 +4,6 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MachineLogViewer.Models
 {
-    public enum Category
-    {
-        A, B, C, D, E, F
-    }
-
     public class LogEntry
     {
         public long LogEntryId { get; set; }
@@ -25,7 +20,8 @@ namespace MachineLogViewer.Models
         public DateTime? ReceivedTime { get; set; }
         
         [Required]
-        public Category Category { get; set; }
+        [DisplayName("Value")]
+        public int Category { get; set; }
 
         public string Description { get; set; }
 

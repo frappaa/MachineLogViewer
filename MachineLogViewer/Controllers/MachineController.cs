@@ -174,7 +174,7 @@ namespace MachineLogViewer.Controllers
             return View(takings.ToPagedList(pageNumber, pageSize));
         }
 
-        public async Task<ActionResult> Log(int? id, string sortOrder, Category? category, DateTime? startDate, DateTime? endDate, int? page)
+        public async Task<ActionResult> Log(int? id, string sortOrder, int? category, DateTime? startDate, DateTime? endDate, int? page)
         {
             ViewBag.CurrentSort = sortOrder;
             if (id == null)
@@ -206,9 +206,9 @@ namespace MachineLogViewer.Controllers
             
             items.Add(new SelectListItem { Text = "", Value = "", Selected = category == null });
             
-            foreach (var value in Enum.GetValues(typeof(Category)))
+            foreach (var value in _db.LogDescriptions)
             {
-                items.Add(new SelectListItem { Text = value.ToString(), Value = ((int)value).ToString(), Selected = category.HasValue && (Category)value == category.Value });   
+                items.Add(new SelectListItem { Text = String.Format("{0} - {1}", value.Value, value.Description), Value = value.Value.ToString(), Selected = category.HasValue && value.Value == category.Value });   
             }
 
             ViewBag.Category = items;

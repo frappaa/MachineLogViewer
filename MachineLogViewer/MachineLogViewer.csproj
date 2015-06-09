@@ -191,11 +191,16 @@
     <Compile Include="Migrations\201506022153220_Init.Designer.cs">
       <DependentUpon>201506022153220_Init.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201506092226102_LogDescriptions.cs" />
+    <Compile Include="Migrations\201506092226102_LogDescriptions.Designer.cs">
+      <DependentUpon>201506092226102_LogDescriptions.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
     <Compile Include="Models\ApplicationUser.cs" />
     <Compile Include="Models\EditMachineViewModel.cs" />
+    <Compile Include="Models\LogDescription.cs" />
     <Compile Include="Models\LogEntry.cs" />
     <Compile Include="Models\Machine.cs" />
     <Compile Include="Models\LogViewModel.cs" />
@@ -284,6 +289,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201506022153220_Init.resx">
       <DependentUpon>201506022153220_Init.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201506092226102_LogDescriptions.resx">
+      <DependentUpon>201506092226102_LogDescriptions.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
