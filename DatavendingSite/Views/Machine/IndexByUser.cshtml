@@ -1,0 +1,74 @@
+﻿@model PagedList.IPagedList<DatavendingSite.Models.Machine>
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+@{
+    ViewBag.Title = "Machines for " + ViewBag.UserName;
+}
+
+<h2>@ViewBag.Title</h2>
+
+<table class="table table-striped">
+    <tr>
+        <th>
+            @Html.ActionLink("Code", "IndexByUser", new { userId = ViewBag.UserId, sortOrder = ViewBag.CodeSortParm })
+            @if (string.IsNullOrEmpty(ViewBag.CurrentSort))
+            {
+                <span class="glyphicon glyphicon-arrow-down"></span>
+            }
+            else if (ViewBag.CurrentSort == "code_desc")
+            {
+                <span class="glyphicon glyphicon-arrow-up"></span>
+            }
+        </th>
+        <th>
+            @Html.ActionLink("Description", "IndexByUser", new {userId = ViewBag.UserId, sortOrder = ViewBag.DescrSortParm})
+            @if (ViewBag.CurrentSort == "Descr")
+            {
+                <span class="glyphicon glyphicon-arrow-down"></span>
+            }
+            else if (ViewBag.CurrentSort == "descr_desc")
+            {
+                <span class="glyphicon glyphicon-arrow-up"></span>
+            }
+        </th>
+        <th>
+            @Html.ActionLink("Expiry Date", "IndexByUser", new {userId = ViewBag.UserId, sortOrder = ViewBag.DateSortParm})
+            @if (ViewBag.CurrentSort == "Date")
+            {
+                <span class="glyphicon glyphicon-arrow-down"></span>
+            }
+            else if (ViewBag.CurrentSort == "date_desc")
+            {
+                <span class="glyphicon glyphicon-arrow-up"></span>
+            }
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Code)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ExpiryDate)
+            </td>
+
+        </tr>
+    }
+
+</table>
+<br />
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+
+@Html.PagedListPager(Model, page => Url.Action("IndexByUser",
+    new { page, sortOrder = ViewBag.CurrentSort, userId = ViewBag.UserId }))
+
+<a href="@Url.Action("Index", "Account")" class="btn btn-default">
+    Back
+</a>

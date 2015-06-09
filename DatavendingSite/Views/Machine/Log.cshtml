@@ -1,0 +1,160 @@
+﻿@using PagedList.Mvc
+@model DatavendingSite.Models.LogViewModel
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+
+@{
+    ViewBag.Title = "Log";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div>
+    <h4>@Html.DisplayFor(model => model.Code) - @Html.DisplayNameFor(model => model.ExpiryDate): @Html.DisplayFor(model => model.ExpiryDate)</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dd>
+            @using (Html.BeginForm("Log", "Machine", FormMethod.Get))
+            {
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <label class="control-label col-md-2">Value:</label>
+                        <div class="col-md-10">
+                            @Html.DropDownList("Category", (IEnumerable<SelectListItem>)ViewBag.Category, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-2">Event After:</label>
+                        <div class="col-md-10">
+                            @Html.TextBox("StartDate", "", new { @id = "after", @class = "form-control", @data_val = "true", @data_val_date = "The field Event After must be a date.", @name = "Event After", @type = "date", @aria_required = "false", @aria_invalid = "false", @aria_describedby = "After-error" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-2">Event Before:</label>
+                        <div class="col-md-10">
+                            @Html.TextBox("EndDate", "", new { @id = "before", @class = "form-control", @data_val = "true", @data_val_date = "The field Event Before must be a date.", @name = "Event Before", @type = "date", @aria_required = "false", @aria_invalid = "false", @aria_describedby = "Before-error" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-10">
+                            <button value="Search" class="btn btn-primary">
+                                <i class="glyphicon glyphicon-search"></i>
+                                Search
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+            <table class="table table-striped">
+                <tr>
+                    <th>
+                        @Html.ActionLink("Event Time", "Log",
+                            new
+                            {
+                                sortOrder = ViewBag.EventDateSortParm,
+                                category = ((List<SelectListItem>)ViewBag.Category).SingleOrDefault(c => c.Selected) != null ? ((List<SelectListItem>)ViewBag.Category).Single(c => c.Selected).Value : "",
+                                startDate = ViewBag.StartDate == null ? "" : ((DateTime)ViewBag.StartDate).ToString("yyyy-MM-dd"),
+                                endDate = ViewBag.EndDate == null ? "" : ((DateTime)ViewBag.EndDate).ToString("yyyy-MM-dd"),
+                            })
+                        @if (string.IsNullOrEmpty(ViewBag.CurrentSort))
+                        {
+                            <span class="glyphicon glyphicon-arrow-down"></span>
+                        }
+                        else if (ViewBag.CurrentSort == "eventdate_desc")
+                        {
+                            <span class="glyphicon glyphicon-arrow-up"></span>
+                        }
+
+                    </th>
+
+                    <th>
+                        @Html.ActionLink("Received Time", "Log",
+                        new
+                        {
+                            sortOrder = ViewBag.ReceivedDateSortParm,
+                            category = ((List<SelectListItem>)ViewBag.Category).SingleOrDefault(c => c.Selected) != null ? ((List<SelectListItem>)ViewBag.Category).Single(c => c.Selected).Value : "",
+                            startDate = ViewBag.StartDate == null ? "" : ((DateTime)ViewBag.StartDate).ToString("yyyy-MM-dd"),
+                            endDate = ViewBag.EndDate == null ? "" : ((DateTime)ViewBag.EndDate).ToString("yyyy-MM-dd"),
+                        })
+                        @if (ViewBag.CurrentSort == "receiveddate")
+                        {
+                            <span class="glyphicon glyphicon-arrow-down"></span>
+                        }
+                        else if (ViewBag.CurrentSort == "receiveddate_desc")
+                        {
+                            <span class="glyphicon glyphicon-arrow-up"></span>
+                        }
+
+                    </th>
+                    <th>
+                        @Html.ActionLink("Value", "Log",
+                        new
+                        {
+                            sortOrder = ViewBag.CategorySortParm,
+                            category = ((List<SelectListItem>)ViewBag.Category).SingleOrDefault(c => c.Selected) != null ? ((List<SelectListItem>)ViewBag.Category).Single(c => c.Selected).Value : "",
+                            startDate = ViewBag.StartDate == null ? "" : ((DateTime)ViewBag.StartDate).ToString("yyyy-MM-dd"),
+                            endDate = ViewBag.EndDate == null ? "" : ((DateTime)ViewBag.EndDate).ToString("yyyy-MM-dd"),
+                        })
+                        @if (ViewBag.CurrentSort == "category")
+                        {
+                            <span class="glyphicon glyphicon-arrow-down"></span>
+                        }
+                        else if (ViewBag.CurrentSort == "category_desc")
+                        {
+                            <span class="glyphicon glyphicon-arrow-up"></span>
+                        }
+                    </th>
+                    <th>
+                        @Html.ActionLink("Description", "Log", new
+                        {
+                            sortOrder = ViewBag.DescrSortParm,
+                            category = ((List<SelectListItem>)ViewBag.Category).SingleOrDefault(c => c.Selected) != null ? ((List<SelectListItem>)ViewBag.Category).Single(c => c.Selected).Value : "",
+                            startDate = ViewBag.StartDate == null ? "" : ((DateTime)ViewBag.StartDate).ToString("yyyy-MM-dd"),
+                            endDate = ViewBag.EndDate == null ? "" : ((DateTime)ViewBag.EndDate).ToString("yyyy-MM-dd"),
+                        })
+                        @if (ViewBag.CurrentSort == "descr")
+                        {
+                            <span class="glyphicon glyphicon-arrow-down"></span>
+                        }
+                        else if (ViewBag.CurrentSort == "descr_desc")
+                        {
+                            <span class="glyphicon glyphicon-arrow-up"></span>
+                        }
+                    </th>
+                </tr>
+                @foreach (var item in Model.LogEntries)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.EventTime)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ReceivedTime)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Category)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Description)
+                        </td>
+                    </tr>
+                }
+            </table>
+            <br />
+            Page @(Model.LogEntries.PageCount < Model.LogEntries.PageNumber ? 0 : Model.LogEntries.PageNumber) of @Model.LogEntries.PageCount
+
+            @Html.PagedListPager(Model.LogEntries, page => Url.Action("Log",
+    new
+    {
+        page,
+        sortOrder = ViewBag.CurrentSort,
+        category = ((List<SelectListItem>)ViewBag.Category).SingleOrDefault(c => c.Selected) != null ? ((List<SelectListItem>)ViewBag.Category).Single(c => c.Selected).Value : "",
+        startDate = ViewBag.StartDate == null ? "" : ((DateTime)ViewBag.StartDate).ToString("yyyy-MM-dd"),
+        endDate = ViewBag.EndDate == null ? "" : ((DateTime)ViewBag.EndDate).ToString("yyyy-MM-dd"),
+    }))
+        </dd>
+    </dl>
+</div>
+<a href="@Url.Action("Index", "Machine")" class="btn btn-default">
+    Back
+</a>

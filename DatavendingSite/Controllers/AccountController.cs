@@ -1,0 +1,383 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Web;
+using System.Web.Mvc;
+using DatavendingSite.Models;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.AspNet.Identity.Owin;
+using Microsoft.Owin.Security;
+using PagedList;
+
+namespace DatavendingSite.Controllers
+{
+    [Authorize]
+    public class AccountController : Controller
+    {
+        private ApplicationSignInManager _signInManager;
+        private ApplicationUserManager _userManager;
+
+        public AccountController()
+        {
+        }
+
+        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
+        {
+            UserManager = userManager;
+            SignInManager = signInManager;
+        }
+
+        public ApplicationSignInManager SignInManager
+        {
+            get
+            {
+                return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
+            }
+            private set 
+            { 
+                _signInManager = value; 
+            }
+        }
+
+        public ApplicationUserManager UserManager
+        {
+            get
+            {
+                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            }
+            private set
+            {
+                _userManager = value;
+            }
+        }
+
+        //
+        // GET: /Account/Login
+        [AllowAnonymous]
+        public ActionResult Login(string returnUrl)
+        {
+            ViewBag.ReturnUrl = returnUrl;
+            return View();
+        }
+
+        //
+        // POST: /Account/Login
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var db = new ApplicationDbContext();
+            var user = db.Users.FirstOrDefault(u => u.UserName == model.UserName);
+            SignInStatus result;
+            if (user == null)
+            {
+                result = SignInStatus.Failure;
+            }
+            else if (!user.IsActive)
+            {
+                result = SignInStatus.LockedOut;
+            }
+            else 
+            {
+
+                // This doesn't count login failures towards account lockout
+                // To enable password failures to trigger account lockout, change to shouldLockout: true
+                result =
+                    await
+                        SignInManager.PasswordSignInAsync(model.UserName, model.Password, isPersistent: false,
+                            shouldLockout: true);
+            }
+
+            switch (result)
+            {
+                case SignInStatus.Success:
+                    return RedirectToLocal(returnUrl, user);
+                case SignInStatus.LockedOut:
+                    return View("Lockout");
+                case SignInStatus.Failure:
+                default:
+                    ModelState.AddModelError("", "Invalid login attempt.");
+                    return View(model);
+            }
+        }
+
+ 
+        //
+        // GET: /Account/Register
+        [Authorize(Roles = "admin")]
+        public ActionResult Register()
+        {
+            return View(new RegisterViewModel());
+        }
+
+        //
+        // POST: /Account/Register
+        [HttpPost]
+        [Authorize(Roles = "admin")]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Register(RegisterViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = model.GetUser();
+                var result = await UserManager.CreateAsync(user, model.Password);
+                if (result.Succeeded)
+                {
+                    var db = new ApplicationDbContext();
+
+                    var adminRole = db.Roles.SingleOrDefault(m => m.Name == "admin");
+
+                    if (model.IsAdmin)
+                    {
+                        user.Roles.Add(new IdentityUserRole { RoleId = adminRole.Id });
+                        db.Entry(user).State = EntityState.Modified;
+                        await db.SaveChangesAsync();
+                    }
+
+                    //await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
+                    
+                    // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
+                    // Send an email with this link
+                    // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                    // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                    // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+
+                    return RedirectToAction("Index", "Account");
+                }
+                AddErrors(result);
+            }
+
+            // If we got this far, something failed, redisplay form
+            return View(model);
+        }
+
+        [Authorize(Roles = "admin")]
+        public ActionResult Index(string sortOrder, int? page)
+        {
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewBag.DescrSortParm = sortOrder == "Descr" ? "descr_desc" : "Descr";
+            ViewBag.ActiveSortParm = sortOrder == "Active" ? "active_desc" : "Active";
+            ViewBag.AdminSortParm = sortOrder == "Admin" ? "admin_desc" : "Admin";
+
+            var db = new ApplicationDbContext();
+            var users = db.Users.OrderBy(u => u.UserName);
+            var model = new List<EditUserViewModel>();
+            foreach (var user in users)
+            {
+                var u = new EditUserViewModel(user);
+                u.IsAdmin = UserManager.GetRoles(user.Id).Contains("admin");
+                model.Add(u);
+            }
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    model = model.OrderByDescending(s => s.UserName).ToList();
+                    break;
+                case "Active":
+                    model = model.OrderBy(s => s.IsActive).ToList();
+                    break;
+                case "active_desc":
+                    model = model.OrderByDescending(s => s.IsActive).ToList();
+                    break;
+                case "Descr":
+                    model = model.OrderBy(s => s.Description).ToList();
+                    break;
+                case "descr_desc":
+                    model = model.OrderByDescending(s => s.Description).ToList();
+                    break;
+                case "Admin":
+                    model = model.OrderBy(s => s.IsAdmin).ToList();
+                    break;
+                case "admin_desc":
+                    model = model.OrderByDescending(s => s.IsAdmin).ToList();
+                    break;
+                default:
+                    model = model.OrderBy(s => s.UserName).ToList();
+                    break;
+            }
+
+            int pageSize = 30;
+            int pageNumber = (page ?? 1);
+
+            return View(model.ToPagedList(pageNumber, pageSize));
+        }
+
+        [Authorize(Roles = "admin")]
+        public ActionResult Edit(string id, ManageController.ManageMessageId? Message = null)
+        {
+            var db = new ApplicationDbContext();
+            var user = db.Users.First(u => u.Id == id);
+            var model = new EditUserViewModel(user);
+            model.IsAdmin = UserManager.GetRoles(user.Id).Contains("admin");
+            ViewBag.MessageId = Message;
+            return View(model);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "admin")]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Edit(EditUserViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var db = new ApplicationDbContext();
+                var user = db.Users.First(u => u.Id == model.Id);
+
+                var isAdmin = UserManager.GetRoles(user.Id).Contains("admin");
+
+                var adminRole = db.Roles.SingleOrDefault(m => m.Name == "admin");
+
+                if (!isAdmin && model.IsAdmin)
+                {
+                    user.Roles.Add(new IdentityUserRole {RoleId = adminRole.Id});
+                }
+                else if (isAdmin && !model.IsAdmin)
+                {
+                    var role = user.Roles.First(r => r.RoleId == adminRole.Id);
+                    user.Roles.Remove(role);
+                }
+
+                // Update the user data:
+                user.UserName = model.UserName;
+                user.Description = model.Description;
+                user.IsActive = model.IsActive;
+                db.Entry(user).State = EntityState.Modified;
+                await db.SaveChangesAsync();
+                return RedirectToAction("Index");
+            }
+            // If we got this far, something failed, redisplay form
+            return View(model);
+        }
+
+        [Authorize(Roles = "admin")]
+        public ActionResult ResetPassword(string id)
+        {
+            var db = new ApplicationDbContext();
+            var user = db.Users.First(u => u.Id == id);
+            return View(new ResetPasswordViewModel { Id = id, UserName = user.UserName });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
+        public async Task<ActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var userId = model.Id;
+
+            var token = await UserManager.GeneratePasswordResetTokenAsync(userId);
+            var result = await UserManager.ResetPasswordAsync(userId, token, model.NewPassword);
+            if (result.Succeeded)
+            {
+                return RedirectToAction("Index", new { Message = ManageController.ManageMessageId.ChangePasswordSuccess });
+            }
+            AddErrors(result);
+            return View(model);
+        }
+
+        [Authorize(Roles = "admin")]
+        public ActionResult Delete(string id = null)
+        {
+            var db = new ApplicationDbContext();
+            var user = db.Users.First(u => u.Id == id);
+            if (user == null)
+            {
+                return HttpNotFound();
+            }
+            if (user.Machines.Any())
+            {
+                return View("UnableToDelete"); 
+            }
+            var model = new EditUserViewModel(user);
+            return View(model);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
+        public ActionResult DeleteConfirmed(string id)
+        {
+            var Db = new ApplicationDbContext();
+            var user = Db.Users.First(u => u.Id == id);
+            Db.Users.Remove(user);
+            Db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        //
+        // POST: /Account/LogOff
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult LogOff()
+        {
+            AuthenticationManager.SignOut();
+            return RedirectToAction("Login", "Account");
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (_userManager != null)
+                {
+                    _userManager.Dispose();
+                    _userManager = null;
+                }
+
+                if (_signInManager != null)
+                {
+                    _signInManager.Dispose();
+                    _signInManager = null;
+                }
+            }
+
+            base.Dispose(disposing);
+        }
+
+        #region Helpers
+ 
+        private IAuthenticationManager AuthenticationManager
+        {
+            get
+            {
+                return HttpContext.GetOwinContext().Authentication;
+            }
+        }
+
+        private void AddErrors(IdentityResult result)
+        {
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError("", error);
+            }
+        }
+
+        private ActionResult RedirectToLocal(string returnUrl, ApplicationUser user)
+        {
+            if (Url.IsLocalUrl(returnUrl))
+            {
+                return Redirect(returnUrl);
+            }
+
+            var controllerName = UserManager.GetRoles(user.Id).Contains("admin") ? "Account" : "Machine";
+            return RedirectToAction("Index", controllerName);
+        }
+
+        #endregion
+    }
+}

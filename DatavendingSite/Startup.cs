@@ -1,8 +1,9 @@
-﻿using Microsoft.Owin;
+﻿using DatavendingSite;
+using Microsoft.Owin;
 using Owin;
 
-[assembly: OwinStartupAttribute(typeof(MachineLogViewer.Startup))]
-namespace MachineLogViewer
+[assembly: OwinStartup(typeof(Startup))]
+namespace DatavendingSite
 {
     public partial class Startup
     {
