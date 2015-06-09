@@ -36,18 +36,18 @@
     </div>
 }
 
-<table class="table">
+<table class="table table-striped">
     <tr>
         <th>
             @Html.ActionLink("Code", "Index", new { sortOrder = ViewBag.CodeSortParm, currentFilter = ViewBag.CurrentFilter })
-            @if (string.IsNullOrEmpty(ViewBag.CurrentSort))
-            {
-                <span class="glyphicon glyphicon-arrow-down"></span>
-            }
-            else if (ViewBag.CurrentSort == "code_desc")
-            {
-                <span class="glyphicon glyphicon-arrow-up"></span>
-            }
+                @if (string.IsNullOrEmpty(ViewBag.CurrentSort))
+                {
+                    <span class="glyphicon glyphicon-arrow-down"></span>
+                }
+                else if (ViewBag.CurrentSort == "code_desc")
+                {
+                    <span class="glyphicon glyphicon-arrow-up"></span>
+                }
         </th>
         <th>
             @Html.ActionLink("Description", "Index", new { sortOrder = ViewBag.DescrSortParm, currentFilter = ViewBag.CurrentFilter })
@@ -107,8 +107,8 @@
                 </td>
             }
             <td>
-                <div class="pull-left">
-                    <div class="button-group">
+                @*<div class="pull-left">*@
+                    <div class="button-group pull-left">
                         @if (User.IsInRole("admin"))
                         {
                             <a href="@Url.Action("Edit", "Machine", new {id = item.MachineId})" class="btn btn-default btn-sm" title="Edit">
@@ -134,7 +134,7 @@
                             </a>
                         }
                     </div>
-                </div>
+                @*</div>*@
             </td>
         </tr>
     }
