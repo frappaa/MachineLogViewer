@@ -84,7 +84,7 @@ namespace MachineLogViewer.Controllers
                     machines = machines.OrderBy(s => s.Code);
                     break;
             }
-            int pageSize = 20;
+            int pageSize = 30;
             int pageNumber = (page ?? 1);
             var filteredMachines = machines.ToList();
             filteredMachines = filteredMachines.Where(m => isAdmin || (m.User != null && m.User.Id == currentUser.Id && m.ExpiryDate >= DateTime.Today)).ToList();
@@ -130,7 +130,7 @@ namespace MachineLogViewer.Controllers
                     machines = machines.OrderBy(s => s.Code);
                     break;
             }
-            int pageSize = 20;
+            int pageSize = 30;
             int pageNumber = (page ?? 1);
             var filteredMachines = machines.ToList();
             filteredMachines = filteredMachines.Where(m => m.User != null && m.User.Id == userId).ToList();
@@ -169,7 +169,7 @@ namespace MachineLogViewer.Controllers
                 .Where(t => (startDate == null || t.Date >= startDate) && (endDate == null || t.Date <= endDate))
                 .OrderBy(t => t.Date);
 
-            int pageSize = 20;
+            int pageSize = 30;
             int pageNumber = (page ?? 1);
             return View(takings.ToPagedList(pageNumber, pageSize));
         }
@@ -256,7 +256,7 @@ namespace MachineLogViewer.Controllers
                     break;
             }
 
-            int pageSize = 20;
+            int pageSize = 30;
             int pageNumber = (page ?? 1);
             viewModel.LogEntries = logEntries.ToPagedList(pageNumber, pageSize);
             return View(viewModel);

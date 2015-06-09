@@ -101,7 +101,7 @@ namespace MachineLogViewer.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
-                    return RedirectToLocal(returnUrl);
+                    return RedirectToLocal(returnUrl, user);
                 case SignInStatus.LockedOut:
                     return View("Lockout");
                 case SignInStatus.Failure:
@@ -208,7 +208,7 @@ namespace MachineLogViewer.Controllers
                     break;
             }
 
-            int pageSize = 20;
+            int pageSize = 30;
             int pageNumber = (page ?? 1);
 
             return View(model.ToPagedList(pageNumber, pageSize));
@@ -327,7 +327,7 @@ namespace MachineLogViewer.Controllers
         public ActionResult LogOff()
         {
             AuthenticationManager.SignOut();
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Login", "Account");
         }
 
         protected override void Dispose(bool disposing)
@@ -368,13 +368,15 @@ namespace MachineLogViewer.Controllers
             }
         }
 
-        private ActionResult RedirectToLocal(string returnUrl)
+        private ActionResult RedirectToLocal(string returnUrl, ApplicationUser user)
         {
             if (Url.IsLocalUrl(returnUrl))
             {
                 return Redirect(returnUrl);
             }
-            return RedirectToAction("Index", "Home");
+
+            var controllerName = UserManager.GetRoles(user.Id).Contains("admin") ? "Account" : "Machine";
+            return RedirectToAction("Index", controllerName);
         }
 
         #endregion
