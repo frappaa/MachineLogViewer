@@ -207,10 +207,10 @@ namespace DatavendingSite.Controllers
                     break;
             }
 
-            int pageSize = 30;
+            
             int pageNumber = (page ?? 1);
 
-            return View(model.ToPagedList(pageNumber, pageSize));
+            return View(model.ToPagedList(pageNumber, Constants.PageSize));
         }
 
         [Authorize(Roles = "admin")]

@@ -84,11 +84,10 @@ namespace DatavendingSite.Controllers
                     machines = machines.OrderBy(s => s.Code);
                     break;
             }
-            int pageSize = 30;
             int pageNumber = (page ?? 1);
             var filteredMachines = machines.ToList();
             filteredMachines = filteredMachines.Where(m => isAdmin || (m.User != null && m.User.Id == currentUser.Id && m.ExpiryDate >= DateTime.Today)).ToList();
-            return View(filteredMachines.ToPagedList(pageNumber, pageSize));
+            return View(filteredMachines.ToPagedList(pageNumber, Constants.PageSize));
         }
 
         // GET: Machine
@@ -130,11 +129,10 @@ namespace DatavendingSite.Controllers
                     machines = machines.OrderBy(s => s.Code);
                     break;
             }
-            int pageSize = 30;
             int pageNumber = (page ?? 1);
             var filteredMachines = machines.ToList();
             filteredMachines = filteredMachines.Where(m => m.User != null && m.User.Id == userId).ToList();
-            return View(filteredMachines.ToPagedList(pageNumber, pageSize));
+            return View(filteredMachines.ToPagedList(pageNumber, Constants.PageSize));
         }
 
         public async Task<ActionResult> Takings(int? id, string sortOrder, DateTime? startDate, DateTime? endDate,
@@ -169,9 +167,8 @@ namespace DatavendingSite.Controllers
                 .Where(t => (startDate == null || t.Date >= startDate) && (endDate == null || t.Date <= endDate))
                 .OrderBy(t => t.Date);
 
-            int pageSize = 30;
             int pageNumber = (page ?? 1);
-            return View(takings.ToPagedList(pageNumber, pageSize));
+            return View(takings.ToPagedList(pageNumber, Constants.PageSize));
         }
 
         public async Task<ActionResult> Log(int? id, string sortOrder, int? category, DateTime? startDate, DateTime? endDate, int? page)
@@ -256,9 +253,8 @@ namespace DatavendingSite.Controllers
                     break;
             }
 
-            int pageSize = 30;
             int pageNumber = (page ?? 1);
-            viewModel.LogEntries = logEntries.ToPagedList(pageNumber, pageSize);
+            viewModel.LogEntries = logEntries.ToPagedList(pageNumber, Constants.PageSize);
             return View(viewModel);
         }
 

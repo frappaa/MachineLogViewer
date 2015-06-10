@@ -6,7 +6,12 @@ namespace DatavendingSite.Controllers
     {
         public ActionResult Index()
         {
-            return View();
+            if (Request.IsAuthenticated)
+            {
+                var controllerName = User.IsInRole("admin") ? "Account" : "Machine";
+                return RedirectToAction("Index", controllerName);
+            }
+            return RedirectToAction("Login", "Account");
         }
     }
 }
