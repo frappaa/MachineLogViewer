@@ -46,5 +46,19 @@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
+    <script>
+        $(function () {
+            var d = new Date();
+            var offsetms = d.getTimezoneOffset() * 60 * 1000;
+            $('.UTCTime').each(function () {
+                var text = $(this).html().trim();
+                if (text.length > 0) {
+                    var dateTime = new Date(text);
+                    dateTime = new Date(dateTime.valueOf() - offsetms);
+                    $(this).html(dateTime.toLocaleString());
+                }
+            });
+        });
+    </script>
 </body>
 </html>

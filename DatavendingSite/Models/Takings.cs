@@ -10,7 +10,6 @@ namespace DatavendingSite.Models
         public int MachineId { get; set; }
 
         [DataType(DataType.DateTime)]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy hh:mm:ss}")]
         [DisplayName("Event Time")]
         public DateTime Date { get; set; }
 

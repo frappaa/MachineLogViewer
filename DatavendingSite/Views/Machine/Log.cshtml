@@ -126,10 +126,14 @@
                 {
                     <tr>
                         <td>
-                            @Html.DisplayFor(modelItem => item.EventTime)
+                            <span class="UTCTime">
+                                @Html.DisplayFor(modelItem => item.EventTime)
+                            </span>
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.ReceivedTime)
+                            <span class="UTCTime">
+                                @Html.DisplayFor(modelItem => item.ReceivedTime)
+                            </span>
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.Category)
